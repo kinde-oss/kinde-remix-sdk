@@ -14,12 +14,22 @@ export const getKindeSession = async (request) => {
   const user = session.get("user") || null;
 
   const idTokenRaw = session.get("id_token") || null;
-  const idToken = jwtDecode(idTokenRaw);
+  let idToken;
+  try {
+    idToken = jwtDecode(idTokenRaw);
+  } catch (error) {}
 
   const accessTokenRaw = session.get("access_token") || null;
-  const accessToken = jwtDecode(accessTokenRaw);
+  let accessToken;
+  try {
+    accessToken = jwtDecode(accessTokenRaw);
+  } catch (error) {}
 
   const getClaim = (claim, token = "accessToken") => {
+    if (!idToken && !accessToken) {
+      return null;
+    }
+
     if (token === "accessToken") {
       return accessToken[claim];
     } else if (token === "idToken") {

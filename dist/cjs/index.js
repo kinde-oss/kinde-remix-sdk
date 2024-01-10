@@ -126,12 +126,22 @@ const getKindeSession = async (request) => {
   const user = session.get("user") || null;
 
   const idTokenRaw = session.get("id_token") || null;
-  const idToken = jwtDecode.jwtDecode(idTokenRaw);
+  let idToken;
+  try {
+    idToken = jwtDecode.jwtDecode(idTokenRaw);
+  } catch (error) {}
 
   const accessTokenRaw = session.get("access_token") || null;
-  const accessToken = jwtDecode.jwtDecode(accessTokenRaw);
+  let accessToken;
+  try {
+    accessToken = jwtDecode.jwtDecode(accessTokenRaw);
+  } catch (error) {}
 
   const getClaim = (claim, token = "accessToken") => {
+    if (!idToken && !accessToken) {
+      return null;
+    }
+
     if (token === "accessToken") {
       return accessToken[claim];
     } else if (token === "idToken") {
@@ -274,8 +284,6 @@ const createKindeApiClient = async (req) => {
     "kinde_api_access_token"
   );
 
-  console.log("token from cookie", tokenFromCookie);
-
   if (isTokenValid(tokenFromCookie)) {
     apiToken = tokenFromCookie;
   } else {
@@ -292,7 +300,6 @@ const createKindeApiClient = async (req) => {
       }),
     });
     apiToken = (await response.json()).access_token;
-    console.log("apiToken", apiToken);
     try {
       await sessionManager.setSessionItem("kinde_api_access_token", apiToken);
     } catch (error) {
