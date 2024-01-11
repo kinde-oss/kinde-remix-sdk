@@ -6,7 +6,7 @@
   "module": "dist/index.js",
   "typings": "dist/types/index.d.ts",
   "scripts": {
-    "build": "npx tsc && npx rollup --c",
+    "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && npx rollup --c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
