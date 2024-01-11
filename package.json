@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/types/index.d.ts",
   "scripts": {
     "build": "npx tsc && npx rollup --c",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^20.10.7",
     "rollup": "^4.9.4",
     "typescript": "^5.3.3"
