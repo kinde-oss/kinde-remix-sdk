@@ -1,1 +1,436 @@
-import{createKindeServerClient as e,GrantType as s,Configuration as t,UsersApi as n,OAuthApi as o,SubscribersApi as i,OrganizationsApi as r,ConnectedAppsApi as a,FeatureFlagsApi as c,EnvironmentsApi as l,PermissionsApi as u,RolesApi as d,BusinessApi as p,IndustriesApi as g,TimezonesApi as S,ApplicationsApi as w,CallbacksApi as _,APIsApi as m}from"@kinde-oss/kinde-typescript-sdk";import{createCookieSessionStorage as k,redirect as y}from"@remix-run/node";import{jwtDecode as h}from"jwt-decode";const I={clientId:process.env.KINDE_CLIENT_ID,clientSecret:process.env.KINDE_CLIENT_SECRET,issuerUrl:process.env.KINDE_ISSUER_URL,siteUrl:process.env.KINDE_SITE_URL,postLogoutRedirectUrl:process.env.KINDE_POST_LOGOUT_REDIRECT_URL,postLoginRedirectUrl:process.env.KINDE_POST_LOGIN_REDIRECT_URL,audience:process.env.KINDE_AUDIENCE},E=e(s.AUTHORIZATION_CODE,{authDomain:I.issuerUrl,clientId:I.clientId,clientSecret:I.clientSecret,redirectURL:I.siteUrl+"/kinde-auth/callback",logoutRedirectURL:I.postLogoutRedirectUrl}),R=k({cookie:{name:"kinde_session",httpOnly:!0,path:"/",sameSite:"lax",secrets:[process.env.SESSION_SECRET],secure:"production"===process.env.NODE_ENV}}),A=async(e,s)=>{const t=e.headers.get("Cookie"),n=await R.getSession(t),o={getSessionItem:async e=>n.get(e),setSessionItem:async(e,s)=>n.set(e,s),removeSessionItem:async e=>n.unset(e),destroySession:async()=>R.destroySession(n)};switch(s){case"login":return(async()=>{const e=await E.login(o);return y(e.toString(),{headers:{"Set-Cookie":await R.commitSession(n,{maxAge:604800})}})})();case"register":return(async()=>{const e=await E.register(o);return y(e.toString(),{headers:{"Set-Cookie":await R.commitSession(n,{maxAge:604800})}})})();case"callback":return(async()=>(await E.handleRedirectToApp(o,new URL(e.url)),y("/",{headers:{"Set-Cookie":await R.commitSession(n,{maxAge:604800})}})))();case"logout":return(async()=>{const e=await E.logout(o);return y(e.toString(),{headers:{"Set-Cookie":await R.destroySession(n)}})})()}},T={s:"string",i:"integer",b:"boolean"},U=async e=>{const s=e.headers.get("Cookie"),t=await R.getSession(s),n=t.get("user")||null,o=t.get("id_token")||null;let i;try{i=h(o)}catch(e){}const r=t.get("access_token")||null;let a;try{a=h(r)}catch(e){}const c=(e,s="accessToken")=>i||a?"accessToken"===s?a[e]:"idToken"===s?i[e]:null:null,l=c("permissions"),u=c("org_codes","idToken"),d=c("org_code"),p=(e,s,t)=>{const n=c("feature_flags"),o=n&&n[e]?n[e]:{};if(o=={}&&null==s)throw Error(`Flag ${e} was not found, and no default value has been provided`);if(t&&o.t&&t!==o.t)throw Error(`Flag ${e} is of type ${T[o.t]} - requested type ${T[t]}`);return{code:e,type:T[o.t||t],value:null==o.v?s:o.v,is_default:null==o.v,defaultValue:s}};return{user:n,idToken:i,accessToken:a,idTokenRaw:o,accessTokenRaw:r,permissions:l,userOrganizations:u,organization:d,getPermission:e=>l.includes(e)?{isGranted:!0,orgCode:d}:null,getFlag:p,getStringFlag:(e,s)=>{try{return p(e,s,"b").value}catch(e){console.error(e)}},getBooleanFlag:(e,s)=>{try{return p(e,s,"b").value}catch(e){console.error(e)}},getIntegerFlag:(e,s)=>{try{return p(e,s,"i").value}catch(e){console.error(e)}}}},v=async e=>{let s=null;const k=e.headers.get("Cookie"),y=await R.getSession(k),E={getSessionItem:async e=>y.get(e),setSessionItem:async(e,s)=>y.set(e,s),removeSessionItem:async e=>y.unset(e),destroySession:async()=>R.destroySession(y)},A=await E.getSessionItem("kinde_api_access_token");if((e=>{const s=e&&e.access_token||e;if(!s)return!1;const t=h(s,{header:!0}),n=h(s);let o=!0;return I.audience&&(o=n.aud&&n.aud.includes(I.audience)),!!(n.iss==I.issuerURL&&"RS256"==t.alg&&n.exp>Math.floor(Date.now()/1e3)&&o)})(A))s=A;else{const e=await fetch(`${I.issuerUrl}/oauth2/token`,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"client_credentials",client_id:I.clientId||"",client_secret:I.clientSecret||"",audience:I.audience||""})});s=(await e.json()).access_token;try{await E.setSessionItem("kinde_api_access_token",s)}catch(e){console.error(e)}}const T=new t({basePath:I.issuerUrl,accessToken:s,headers:{Accept:"application/json"}});return{usersApi:new n(T),oauthApi:new o(T),subscribersApi:new i(T),organizationsApi:new r(T),connectedAppsApi:new a(T),featureFlagsApi:new c(T),environmentsApi:new l(T),permissionsApi:new u(T),rolesApi:new d(T),businessApi:new p(T),industriesApi:new g(T),timezonesApi:new S(T),applicationsApi:new w(T),callbacksApi:new _(T),apisApi:new m(T)}};export{v as createKindeApiClient,U as getKindeSession,A as handleAuth};
+import { createKindeServerClient, GrantType, Configuration, UsersApi, OAuthApi, SubscribersApi, OrganizationsApi, ConnectedAppsApi, FeatureFlagsApi, EnvironmentsApi, PermissionsApi, RolesApi, BusinessApi, IndustriesApi, TimezonesApi, ApplicationsApi, CallbacksApi, APIsApi } from '@kinde-oss/kinde-typescript-sdk';
+import { createCookieSessionStorage, redirect } from '@remix-run/node';
+import { jwtDecode } from 'jwt-decode';
+
+const config = {
+  clientId: process.env.KINDE_CLIENT_ID,
+  clientSecret: process.env.KINDE_CLIENT_SECRET,
+  issuerUrl: process.env.KINDE_ISSUER_URL,
+  siteUrl: process.env.KINDE_SITE_URL,
+  postLogoutRedirectUrl: process.env.KINDE_POST_LOGOUT_REDIRECT_URL,
+  postLoginRedirectUrl: process.env.KINDE_POST_LOGIN_REDIRECT_URL,
+  audience: process.env.KINDE_AUDIENCE,
+  cookieMaxAge: process.env.KINDE_COOKIE_MAX_AGE,
+};
+
+const kindeClient = createKindeServerClient(GrantType.AUTHORIZATION_CODE, {
+  authDomain: config.issuerUrl,
+  clientId: config.clientId,
+  clientSecret: config.clientSecret,
+  redirectURL: config.siteUrl + "/kinde-auth/callback",
+  logoutRedirectURL: config.postLogoutRedirectUrl,
+});
+
+const sessionStorage = createCookieSessionStorage({
+  cookie: {
+    name: "kinde_session",
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secrets: [process.env.SESSION_SECRET],
+    secure: process.env.NODE_ENV === "production",
+  },
+});
+
+/**
+ *
+ * @param {Request} request
+ * @param {*} route
+ * @returns
+ */
+const handleAuth = async (request, route) => {
+  const cookie = request.headers.get("Cookie");
+  const session = await sessionStorage.getSession(cookie);
+
+  const sessionManager = {
+    async getSessionItem(key) {
+      return session.get(key);
+    },
+    async setSessionItem(key, value) {
+      return session.set(key, value);
+    },
+    async removeSessionItem(key) {
+      return session.unset(key);
+    },
+    async destroySession() {
+      return sessionStorage.destroySession(session);
+    },
+  };
+
+  const login = async () => {
+    const authUrl = await kindeClient.login(sessionManager);
+    const { searchParams } = new URL(request.url);
+    const postLoginRedirecturl = searchParams.get("returnTo");
+
+    if (postLoginRedirecturl) {
+      session.set("post_login_redirect_url", postLoginRedirecturl);
+    }
+
+    return redirect(authUrl.toString(), {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session, {
+          maxAge: config.cookieMaxAge || undefined,
+        }),
+      },
+    });
+  };
+
+  const register = async () => {
+    const authUrl = await kindeClient.register(sessionManager);
+    const { searchParams } = new URL(request.url);
+    const postLoginRedirecturl = searchParams.get("returnTo");
+
+    if (postLoginRedirecturl) {
+      session.set("post_login_redirect_url", postLoginRedirecturl);
+    }
+
+    return redirect(authUrl.toString(), {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session, {
+          maxAge: config.cookieMaxAge || undefined,
+        }),
+      },
+    });
+  };
+
+  const callback = async () => {
+    await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
+
+    const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
+      "post_login_redirect_url"
+    );
+
+    if (postLoginRedirectURLFromMemory) {
+      sessionManager.removeSessionItem("post_login_redirect_url");
+    }
+
+    const postLoginRedirectURL = postLoginRedirectURLFromMemory
+      ? postLoginRedirectURLFromMemory
+      : config.postLoginRedirectUrl;
+
+    return redirect(postLoginRedirectURL, {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session, {
+          maxAge: config.cookieMaxAge || undefined,
+        }),
+      },
+    });
+  };
+
+  const logout = async () => {
+    const authUrl = await kindeClient.logout(sessionManager);
+
+    return redirect(authUrl.toString(), {
+      headers: {
+        "Set-Cookie": await sessionStorage.destroySession(session),
+      },
+    });
+  };
+
+  switch (route) {
+    case "login":
+      return login();
+    case "register":
+      return register();
+    case "callback":
+      return callback();
+    case "logout":
+      return logout();
+  }
+};
+
+const flagDataTypeMap = {
+  s: "string",
+  i: "integer",
+  b: "boolean",
+};
+
+const getKindeSession = async (request) => {
+  const cookie = request.headers.get("Cookie");
+  const session = await sessionStorage.getSession(cookie);
+
+  /**
+   * @type {import("./types").KindeUser}
+   */
+  const user = session.get("user") || null;
+
+  /**
+   * @type {string | null}
+   */
+  const idTokenRaw = session.get("id_token") || null;
+
+  /**
+   * @type {import("./types").KindeIdToken | null}
+   */
+  let idToken;
+  try {
+    idToken = jwtDecode(idTokenRaw);
+  } catch (error) {}
+
+  /**
+   * @type {string | null}
+   */
+  const accessTokenRaw = session.get("access_token") || null;
+
+  /**
+   * @type {import("./types").KindeAccessToken | null}
+   */
+  let accessToken;
+  try {
+    accessToken = jwtDecode(accessTokenRaw);
+  } catch (error) {}
+
+  const getClaim = (claim, token = "accessToken") => {
+    if (!idToken && !accessToken) {
+      return null;
+    }
+
+    if (token === "accessToken") {
+      return accessToken[claim];
+    } else if (token === "idToken") {
+      return idToken[claim];
+    } else {
+      return null;
+    }
+  };
+
+  /**
+   * @type {string[]}
+   */
+  const permissions = getClaim("permissions") || [];
+
+  /**
+   * @type {string[]}
+   */
+  const userOrganizations = getClaim("org_codes", "idToken");
+
+  /**
+   * @type {string}
+   */
+  const organization = getClaim("org_code");
+
+  /**
+   *
+   * @param {string} permission
+   * @returns {import("./types").KindePermission | null}
+   */
+  const getPermission = (permission) => {
+    if (!permissions) return null;
+    if (permissions.includes(permission)) {
+      return {
+        isGranted: true,
+        orgCode: organization,
+      };
+    }
+    return null;
+  };
+
+  /**
+   *
+   * @param {string} code
+   * @param {any} defaultValue
+   * @param {"i" | "s" | "b"} type
+   * @returns {{code: string, type: "string" | "integer" | "boolean", value: any,is_default: boolean, defaultValue: any}}
+   */
+  const getFlag = (code, defaultValue, type) => {
+    const flags = getClaim("feature_flags");
+    const flag = flags && flags[code] ? flags[code] : {};
+
+    if (flag == {} && defaultValue == undefined) {
+      throw Error(
+        `Flag ${code} was not found, and no default value has been provided`
+      );
+    }
+
+    if (type && flag.t && type !== flag.t) {
+      throw Error(
+        `Flag ${code} is of type ${flagDataTypeMap[flag.t]} - requested type ${
+          flagDataTypeMap[type]
+        }`
+      );
+    }
+
+    return {
+      code,
+      type: flagDataTypeMap[flag.t || type],
+      value: flag.v == null ? defaultValue : flag.v,
+      is_default: flag.v == null,
+      defaultValue,
+    };
+  };
+
+  /**
+   *
+   * @param {string} code
+   * @param {boolean} defaultValue
+   * @returns {boolean}
+   */
+  const getBooleanFlag = (code, defaultValue) => {
+    try {
+      const flag = getFlag(code, defaultValue, "b");
+      return flag.value;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /**
+   *
+   * @param {string} code
+   * @param {string} defaultValue
+   * @returns {string}
+   */
+  const getStringFlag = (code, defaultValue) => {
+    try {
+      const flag = getFlag(code, defaultValue, "b");
+      return flag.value;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /**
+   *
+   * @param {string} code
+   * @param {number} defaultValue
+   * @returns {number}
+   */
+  const getIntegerFlag = (code, defaultValue) => {
+    try {
+      const flag = getFlag(code, defaultValue, "i");
+      return flag.value;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return {
+    user,
+    idToken,
+    accessToken,
+    idTokenRaw,
+    accessTokenRaw,
+    permissions,
+    userOrganizations,
+    organization,
+    getPermission,
+    getFlag,
+    getStringFlag,
+    getBooleanFlag,
+    getIntegerFlag,
+  };
+};
+
+const isTokenValid = (token) => {
+  const accessToken = (token && token.access_token) || token;
+  if (!accessToken) return false;
+
+  const accessTokenHeader = jwtDecode(accessToken, { header: true });
+  const accessTokenPayload = jwtDecode(accessToken);
+  let isAudienceValid = true;
+  if (config.audience)
+    isAudienceValid =
+      accessTokenPayload.aud &&
+      accessTokenPayload.aud.includes(config.audience);
+
+  if (
+    accessTokenPayload.iss == config.issuerURL &&
+    accessTokenHeader.alg == "RS256" &&
+    accessTokenPayload.exp > Math.floor(Date.now() / 1000) &&
+    isAudienceValid
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const createKindeApiClient = async (req) => {
+  let apiToken = null;
+  const cookie = req.headers.get("Cookie");
+  const session = await sessionStorage.getSession(cookie);
+
+  const sessionManager = {
+    async getSessionItem(key) {
+      return session.get(key);
+    },
+    async setSessionItem(key, value) {
+      return session.set(key, value);
+    },
+    async removeSessionItem(key) {
+      return session.unset(key);
+    },
+    async destroySession() {
+      return sessionStorage.destroySession(session);
+    },
+  };
+
+  const tokenFromCookie = await sessionManager.getSessionItem(
+    "kinde_api_access_token"
+  );
+
+  if (isTokenValid(tokenFromCookie)) {
+    apiToken = tokenFromCookie;
+  } else {
+    const response = await fetch(`${config.issuerUrl}/oauth2/token`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: config.clientId || "",
+        client_secret: config.clientSecret || "",
+        audience: config.audience || "",
+      }),
+    });
+    apiToken = (await response.json()).access_token;
+    try {
+      await sessionManager.setSessionItem("kinde_api_access_token", apiToken);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const cfg = new Configuration({
+    basePath: config.issuerUrl,
+    accessToken: apiToken,
+    headers: { Accept: "application/json" },
+  });
+
+  const usersApi = new UsersApi(cfg);
+  const oauthApi = new OAuthApi(cfg);
+  const subscribersApi = new SubscribersApi(cfg);
+  const organizationsApi = new OrganizationsApi(cfg);
+  const connectedAppsApi = new ConnectedAppsApi(cfg);
+  const featureFlagsApi = new FeatureFlagsApi(cfg);
+  const environmentsApi = new EnvironmentsApi(cfg);
+  const permissionsApi = new PermissionsApi(cfg);
+  const rolesApi = new RolesApi(cfg);
+  const businessApi = new BusinessApi(cfg);
+  const industriesApi = new IndustriesApi(cfg);
+  const timezonesApi = new TimezonesApi(cfg);
+  const applicationsApi = new ApplicationsApi(cfg);
+  const callbacksApi = new CallbacksApi(cfg);
+  const apisApi = new APIsApi(cfg);
+
+  return {
+    usersApi,
+    oauthApi,
+    subscribersApi,
+    organizationsApi,
+    connectedAppsApi,
+    featureFlagsApi,
+    environmentsApi,
+    permissionsApi,
+    rolesApi,
+    businessApi,
+    industriesApi,
+    timezonesApi,
+    applicationsApi,
+    callbacksApi,
+    apisApi,
+  };
+};
+
+export { createKindeApiClient, getKindeSession, handleAuth };
