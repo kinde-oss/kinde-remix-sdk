@@ -51,10 +51,17 @@ export const handleAuth = async (request, route) => {
 
   const login = async () => {
     const authUrl = await kindeClient.login(sessionManager);
+    const { searchParams } = new URL(request.url);
+    const postLoginRedirecturl = searchParams.get("returnTo");
+
+    if (postLoginRedirecturl) {
+      session.set("post_login_redirect_url", postLoginRedirecturl);
+    }
+
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
+          maxAge: config.cookieMaxAge || undefined,
         }),
       },
     });
@@ -62,10 +69,17 @@ export const handleAuth = async (request, route) => {
 
   const register = async () => {
     const authUrl = await kindeClient.register(sessionManager);
+    const { searchParams } = new URL(request.url);
+    const postLoginRedirecturl = searchParams.get("returnTo");
+
+    if (postLoginRedirecturl) {
+      session.set("post_login_redirect_url", postLoginRedirecturl);
+    }
+
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
+          maxAge: config.cookieMaxAge || undefined,
         }),
       },
     });
@@ -73,10 +87,23 @@ export const handleAuth = async (request, route) => {
 
   const callback = async () => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
-    return redirect("/", {
+
+    const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
+      "post_login_redirect_url"
+    );
+
+    if (postLoginRedirectURLFromMemory) {
+      sessionManager.removeSessionItem("post_login_redirect_url");
+    }
+
+    const postLoginRedirectURL = postLoginRedirectURLFromMemory
+      ? postLoginRedirectURLFromMemory
+      : config.postLoginRedirectUrl;
+
+    return redirect(postLoginRedirectURL, {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
+          maxAge: config.cookieMaxAge || undefined,
         }),
       },
     });
