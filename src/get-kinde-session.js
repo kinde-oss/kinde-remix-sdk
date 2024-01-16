@@ -59,7 +59,7 @@ export const getKindeSession = async (request) => {
   /**
    * @type {string[]}
    */
-  const permissions = getClaim("permissions");
+  const permissions = getClaim("permissions") || [];
 
   /**
    * @type {string[]}
@@ -77,6 +77,7 @@ export const getKindeSession = async (request) => {
    * @returns {import("./types").KindePermission | null}
    */
   const getPermission = (permission) => {
+    if (!permissions) return null;
     if (permissions.includes(permission)) {
       return {
         isGranted: true,
