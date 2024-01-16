@@ -6,4 +6,5 @@ export const config = {
   postLogoutRedirectUrl: process.env.KINDE_POST_LOGOUT_REDIRECT_URL,
   postLoginRedirectUrl: process.env.KINDE_POST_LOGIN_REDIRECT_URL,
   audience: process.env.KINDE_AUDIENCE,
+  cookieMaxAge: process.env.KINDE_COOKIE_MAX_AGE,
 };
