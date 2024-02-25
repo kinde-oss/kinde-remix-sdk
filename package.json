@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@kinde-oss/kinde-typescript-sdk": "^2.5.0",
+    "@kinde-oss/kinde-typescript-sdk": "^2.6.2",
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
