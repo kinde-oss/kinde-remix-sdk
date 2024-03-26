@@ -1,9 +1,0 @@
-/**
- * This file is read-only, the const SDK_VERSION will be set to the package version
- * from package.json at build time, this action may or may not effect any changes
- * you make to this file. We therefore recommend that you refrain from editing this
- * file.
- */
-import { type SDKHeaderOverrideOptions } from './oauth2-flows/index.js';
-export declare const SDK_VERSION: "2.8.0";
-export declare const getSDKHeader: (options?: SDKHeaderOverrideOptions) => [string, string];
