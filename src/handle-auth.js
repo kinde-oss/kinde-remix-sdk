@@ -5,13 +5,16 @@ import {
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { config } from "./config";
 
-const kindeClient = createKindeServerClient(GrantType.AUTHORIZATION_CODE, {
-  authDomain: config.issuerUrl,
-  clientId: config.clientId,
-  clientSecret: config.clientSecret,
-  redirectURL: config.siteUrl + "/kinde-auth/callback",
-  logoutRedirectURL: config.postLogoutRedirectUrl,
-});
+export const kindeClient = createKindeServerClient(
+  GrantType.AUTHORIZATION_CODE,
+  {
+    authDomain: config.issuerUrl,
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
+    redirectURL: config.siteUrl + "/kinde-auth/callback",
+    logoutRedirectURL: config.postLogoutRedirectUrl,
+  }
+);
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -34,18 +37,43 @@ export const handleAuth = async (request, route) => {
   const cookie = request.headers.get("Cookie");
   const session = await sessionStorage.getSession(cookie);
 
+  /** @type {import("@kinde-oss/kinde-typescript-sdk").SessionManager} */
   const sessionManager = {
+    /**
+     * Get a session item.
+     * @param {string} key - The key of the session item.
+     * @returns {Promise<any>} The session item.
+     */
     async getSessionItem(key) {
       return session.get(key);
     },
+
+    /**
+     * Set a session item.
+     * @param {string} key - The key of the session item.
+     * @param {any} value - The value to set.
+     * @returns {Promise<void>}
+     */
     async setSessionItem(key, value) {
       return session.set(key, value);
     },
+
+    /**
+     * Remove a session item.
+     * @param {string} key - The key of the session item.
+     * @returns {Promise<void>}
+     */
     async removeSessionItem(key) {
       return session.unset(key);
     },
+
+    /**
+     * Destroy the session.
+     * @returns {Promise<void>}
+     */
     async destroySession() {
-      return sessionStorage.destroySession(session);
+      sessionStorage.destroySession(session);
+      return Promise.resolve();
     },
   };
 
@@ -61,7 +89,7 @@ export const handleAuth = async (request, route) => {
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge || undefined,
+          maxAge: parseInt(config.cookieMaxAge) || undefined,
         }),
       },
     });
@@ -79,7 +107,7 @@ export const handleAuth = async (request, route) => {
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge || undefined,
+          maxAge: parseInt(config.cookieMaxAge) || undefined,
         }),
       },
     });
@@ -100,10 +128,10 @@ export const handleAuth = async (request, route) => {
       ? postLoginRedirectURLFromMemory
       : config.postLoginRedirectUrl;
 
-    return redirect(postLoginRedirectURL, {
+    return redirect(postLoginRedirectURL.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge || undefined,
+          maxAge: parseInt(config.cookieMaxAge) || undefined,
         }),
       },
     });

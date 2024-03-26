@@ -1,136 +1,149 @@
-import { sessionStorage } from "./handle-auth";
-import { jwtDecode } from "jwt-decode";
-
-const flagDataTypeMap = {
-  s: "string",
-  i: "integer",
-  b: "boolean",
-};
+import { kindeClient, sessionStorage } from "./handle-auth";
 
 export const getKindeSession = async (request) => {
   const cookie = request.headers.get("Cookie");
   const session = await sessionStorage.getSession(cookie);
 
   /**
-   * @type {import("./types").KindeUser}
+   * @typedef {Object} SessionManager
+   * @property {function(string): Promise<any>} getSessionItem - Function to get a session item.
+   * @property {function(string, any): Promise<void>} setSessionItem - Function to set a session item.
+   * @property {function(string): Promise<void>} removeSessionItem - Function to remove a session item.
+   * @property {function(): Promise<void>} destroySession - Function to destroy the session.
    */
-  const user = session.get("user") || null;
 
-  /**
-   * @type {string | null}
-   */
-  const idTokenRaw = session.get("id_token") || null;
+  /** @type {SessionManager} */
+  const sessionManager = {
+    /**
+     * Get a session item.
+     * @param {string} key - The key of the session item.
+     * @returns {Promise<any>} The session item.
+     */
+    async getSessionItem(key) {
+      return session.get(key);
+    },
 
-  /**
-   * @type {import("./types").KindeIdToken | null}
-   */
-  let idToken;
-  try {
-    idToken = jwtDecode(idTokenRaw);
-  } catch (error) {}
+    /**
+     * Set a session item.
+     * @param {string} key - The key of the session item.
+     * @param {any} value - The value to set.
+     * @returns {Promise<void>}
+     */
+    async setSessionItem(key, value) {
+      return session.set(key, value);
+    },
 
-  /**
-   * @type {string | null}
-   */
-  const accessTokenRaw = session.get("access_token") || null;
+    /**
+     * Remove a session item.
+     * @param {string} key - The key of the session item.
+     * @returns {Promise<void>}
+     */
+    async removeSessionItem(key) {
+      return session.unset(key);
+    },
 
-  /**
-   * @type {import("./types").KindeAccessToken | null}
-   */
-  let accessToken;
-  try {
-    accessToken = jwtDecode(accessTokenRaw);
-  } catch (error) {}
-
-  const getClaim = (claim, token = "accessToken") => {
-    if (!idToken && !accessToken) {
-      return null;
-    }
-
-    if (token === "accessToken") {
-      return accessToken[claim];
-    } else if (token === "idToken") {
-      return idToken[claim];
-    } else {
-      return null;
-    }
-  };
-
-  /**
-   * @type {string[]}
-   */
-  const permissions = getClaim("permissions") || [];
-
-  /**
-   * @type {string[]}
-   */
-  const userOrganizations = getClaim("org_codes", "idToken");
-
-  /**
-   * @type {string}
-   */
-  const organization = getClaim("org_code");
-
-  /**
-   *
-   * @param {string} permission
-   * @returns {import("./types").KindePermission | null}
-   */
-  const getPermission = (permission) => {
-    if (!permissions) return null;
-    if (permissions.includes(permission)) {
-      return {
-        isGranted: true,
-        orgCode: organization,
-      };
-    }
-    return null;
+    /**
+     * Destroy the session.
+     * @returns {Promise<void>}
+     */
+    async destroySession() {
+      sessionStorage.destroySession(session);
+      return Promise.resolve();
+    },
   };
 
   /**
    *
-   * @param {string} code
-   * @param {any} defaultValue
-   * @param {"i" | "s" | "b"} type
-   * @returns {{code: string, type: "string" | "integer" | "boolean", value: any,is_default: boolean, defaultValue: any}}
+   * @param {string} claim
+   * @param {import("@kinde-oss/kinde-typescript-sdk").ClaimTokenType} type
+   * @returns
    */
-  const getFlag = (code, defaultValue, type) => {
-    const flags = getClaim("feature_flags");
-    const flag = flags && flags[code] ? flags[code] : {};
-
-    if (flag == {} && defaultValue == undefined) {
-      throw Error(
-        `Flag ${code} was not found, and no default value has been provided`
-      );
-    }
-
-    if (type && flag.t && type !== flag.t) {
-      throw Error(
-        `Flag ${code} is of type ${flagDataTypeMap[flag.t]} - requested type ${
-          flagDataTypeMap[type]
-        }`
-      );
-    }
-
-    return {
-      code,
-      type: flagDataTypeMap[flag.t || type],
-      value: flag.v == null ? defaultValue : flag.v,
-      is_default: flag.v == null,
-      defaultValue,
-    };
-  };
-
-  /**
-   *
-   * @param {string} code
-   * @param {boolean} defaultValue
-   * @returns {boolean}
-   */
-  const getBooleanFlag = (code, defaultValue) => {
+  const getClaimValue = async (claim, type) => {
     try {
-      const flag = getFlag(code, defaultValue, "b");
-      return flag.value;
+      return await kindeClient.getClaimValue(sessionManager, claim, type);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  /**
+   *
+   * @param {string} claim
+   * @param {import("@kinde-oss/kinde-typescript-sdk").ClaimTokenType} type
+   * @returns {Promise<{name: string, value: unknown} | null>}
+   */
+  const getClaim = async (claim, type) => {
+    try {
+      return await kindeClient.getClaim(sessionManager, claim, type);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      return await kindeClient.getToken(sessionManager);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const refreshTokens = async () => {
+    try {
+      return await kindeClient.refreshTokens(sessionManager);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const isAuthenticated = async () => {
+    try {
+      return await kindeClient.isAuthenticated(sessionManager);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const getUser = async () => {
+    try {
+      return await kindeClient.getUser(sessionManager);
+    } catch (error) {
+      if (
+        error.message !==
+        "Cannot get user details, no authentication credential found"
+      )
+        console.error(error);
+      return null;
+    }
+  };
+
+  const getUserProfile = async () => {
+    try {
+      return await kindeClient.getUserProfile(sessionManager);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  /**
+   *
+   * @param {string} code
+   * @param {boolean | string | number} defaultValue
+   * @param {*} type
+   */
+  const getFlag = async (code, defaultValue, type) => {
+    try {
+      return await kindeClient.getFlag(
+        sessionManager,
+        code.toLowerCase(),
+        defaultValue,
+        type
+      );
     } catch (err) {
       console.error(err);
     }
@@ -139,13 +152,16 @@ export const getKindeSession = async (request) => {
   /**
    *
    * @param {string} code
-   * @param {string} defaultValue
-   * @returns {string}
+   * @param {boolean} defaultValue
+   * @returns {Promise<boolean>}
    */
-  const getStringFlag = (code, defaultValue) => {
+  const getBooleanFlag = async (code, defaultValue) => {
     try {
-      const flag = getFlag(code, defaultValue, "b");
-      return flag.value;
+      return await kindeClient.getBooleanFlag(
+        sessionManager,
+        code.toLowerCase(),
+        defaultValue
+      );
     } catch (err) {
       console.error(err);
     }
@@ -155,30 +171,87 @@ export const getKindeSession = async (request) => {
    *
    * @param {string} code
    * @param {number} defaultValue
-   * @returns {number}
+   * @returns {Promise<number>}
    */
-  const getIntegerFlag = (code, defaultValue) => {
+  const getIntegerFlag = async (code, defaultValue) => {
     try {
-      const flag = getFlag(code, defaultValue, "i");
-      return flag.value;
+      return await kindeClient.getIntegerFlag(
+        sessionManager,
+        code.toLowerCase(),
+        defaultValue
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  /**
+   *
+   * @param {string} code
+   * @param {string} defaultValue
+   * @returns {Promise<string>}
+   */
+  const getStringFlag = async (code, defaultValue) => {
+    try {
+      return await kindeClient.getStringFlag(
+        sessionManager,
+        code.toLowerCase(),
+        defaultValue
+      );
     } catch (err) {
       console.error(err);
     }
   };
 
+  const getPermission = async (permission) => {
+    try {
+      return await kindeClient.getPermission(sessionManager, permission);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getPermissions = async () => {
+    try {
+      return await kindeClient.getPermissions(sessionManager);
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
+  const getOrganization = async () => {
+    try {
+      return await kindeClient.getOrganization(sessionManager);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
+  const getUserOrganizations = async () => {
+    try {
+      return await kindeClient.getUserOrganizations(sessionManager);
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
   return {
-    user,
-    idToken,
-    accessToken,
-    idTokenRaw,
-    accessTokenRaw,
-    permissions,
-    userOrganizations,
-    organization,
+    getClaim,
+    getClaimValue,
+    getOrganization,
     getPermission,
+    getPermissions,
     getFlag,
     getStringFlag,
     getBooleanFlag,
     getIntegerFlag,
+    getToken,
+    getUser,
+    getUserProfile,
+    getUserOrganizations,
+    isAuthenticated,
+    refreshTokens,
   };
 };
