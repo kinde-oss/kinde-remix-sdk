@@ -4,3 +4,4 @@ dist
 playground
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+coverage
