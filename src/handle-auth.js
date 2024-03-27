@@ -14,6 +14,8 @@ export const kindeClient = createKindeServerClient(
     clientSecret: config.clientSecret,
     redirectURL: config.siteUrl + "/kinde-auth/callback",
     logoutRedirectURL: config.postLogoutRedirectUrl,
+    frameworkVersion: "1.0",
+    framework: "Remix",
   }
 );
 
