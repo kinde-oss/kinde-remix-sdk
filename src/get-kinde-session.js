@@ -1,56 +1,12 @@
-import { kindeClient, sessionStorage } from "./handle-auth";
+import { kindeClient } from "./handle-auth";
+import { createSessionManager } from "./session/session";
 
+/**
+ *
+ * @param {Request} request
+ */
 export const getKindeSession = async (request) => {
-  const cookie = request.headers.get("Cookie");
-  const session = await sessionStorage.getSession(cookie);
-
-  /**
-   * @typedef {Object} SessionManager
-   * @property {function(string): Promise<any>} getSessionItem - Function to get a session item.
-   * @property {function(string, any): Promise<void>} setSessionItem - Function to set a session item.
-   * @property {function(string): Promise<void>} removeSessionItem - Function to remove a session item.
-   * @property {function(): Promise<void>} destroySession - Function to destroy the session.
-   */
-
-  /** @type {SessionManager} */
-  const sessionManager = {
-    /**
-     * Get a session item.
-     * @param {string} key - The key of the session item.
-     * @returns {Promise<any>} The session item.
-     */
-    async getSessionItem(key) {
-      return session.get(key);
-    },
-
-    /**
-     * Set a session item.
-     * @param {string} key - The key of the session item.
-     * @param {any} value - The value to set.
-     * @returns {Promise<void>}
-     */
-    async setSessionItem(key, value) {
-      return session.set(key, value);
-    },
-
-    /**
-     * Remove a session item.
-     * @param {string} key - The key of the session item.
-     * @returns {Promise<void>}
-     */
-    async removeSessionItem(key) {
-      return session.unset(key);
-    },
-
-    /**
-     * Destroy the session.
-     * @returns {Promise<void>}
-     */
-    async destroySession() {
-      sessionStorage.destroySession(session);
-      return Promise.resolve();
-    },
-  };
+  const { sessionManager } = await createSessionManager(request);
 
   /**
    *
@@ -146,6 +102,7 @@ export const getKindeSession = async (request) => {
       );
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
@@ -164,6 +121,7 @@ export const getKindeSession = async (request) => {
       );
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
@@ -182,6 +140,7 @@ export const getKindeSession = async (request) => {
       );
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
   /**
@@ -199,6 +158,7 @@ export const getKindeSession = async (request) => {
       );
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
@@ -207,6 +167,7 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getPermission(sessionManager, permission);
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 

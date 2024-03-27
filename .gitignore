@@ -2,3 +2,5 @@ node_modules
 dist
 .DS_Store
 playground
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

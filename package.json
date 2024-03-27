@@ -8,7 +8,8 @@
   "scripts": {
     "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && npx rollup --c",
     "release": "npm run build && npx changelogen --release",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
     "dev:prepare": "rm -rf playground && git clone https://github.com/kinde-starter-kits/kinde-auth-remix-starter-kit.git playground && npm link && cd playground && mv .env.sample .env && npm uninstall @kinde-oss/kinde-auth-remix-sdk && rm -rf .git && npm link @kinde-oss/kinde-auth-remix-sdk",
     "dev": "cd playground && npx remix dev --manual"
   },
@@ -21,8 +22,10 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^20.10.7",
+    "@vitest/coverage-v8": "^1.4.0",
     "rollup": "^4.9.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.4.0"
   },
   "peerDependencies": {
     "@remix-run/node": "^2.4.1"
