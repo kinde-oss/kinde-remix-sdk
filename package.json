@@ -11,7 +11,8 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "dev:prepare": "rm -rf playground && git clone https://github.com/kinde-starter-kits/kinde-auth-remix-starter-kit.git playground && npm link && cd playground && mv .env.sample .env && npm uninstall @kinde-oss/kinde-auth-remix-sdk && rm -rf .git && npm link @kinde-oss/kinde-auth-remix-sdk",
-    "dev": "cd playground && npx remix dev --manual"
+    "dev": "cd playground && npx remix dev --manual",
+    "lint": "eslint . --ext .ts"
   },
   "author": "",
   "license": "ISC",
@@ -22,9 +23,15 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^20.10.7",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@vitest/coverage-v8": "^1.4.0",
+    "eslint": "^8.57.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
     "rollup": "^4.9.4",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.3",
     "vitest": "^1.4.0"
   },
   "peerDependencies": {

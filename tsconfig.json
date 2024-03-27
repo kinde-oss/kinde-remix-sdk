@@ -18,6 +18,7 @@
     // "Go to Definition" in VSCode
     "declarationMap": true,
     "esModuleInterop": true,
-    "checkJs": true
+    "checkJs": true,
+    "strictNullChecks": true
   }
 }
