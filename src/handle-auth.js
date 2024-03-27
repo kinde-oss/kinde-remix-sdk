@@ -14,7 +14,7 @@ export const kindeClient = createKindeServerClient(
     clientSecret: config.clientSecret,
     redirectURL: config.siteUrl + "/kinde-auth/callback",
     logoutRedirectURL: config.postLogoutRedirectUrl,
-  }
+  },
 );
 
 /**
@@ -72,7 +72,7 @@ export const handleAuth = async (request, route) => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url"
+      "post_login_redirect_url",
     );
 
     if (postLoginRedirectURLFromMemory) {
