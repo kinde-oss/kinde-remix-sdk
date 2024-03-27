@@ -1,12 +1,12 @@
-export type KindeUser = {
+export interface KindeUser {
   family_name: string | null;
   given_name: string | null;
   picture: string | null;
   email: string;
   id: string;
-};
+}
 
-export type KindeAccessToken = {
+export interface KindeAccessToken {
   aud: string[];
   azp: string;
   billing: {
@@ -23,12 +23,13 @@ export type KindeAccessToken = {
     };
   };
   exp: number;
-  feature_flgs: {
-    [key: string]: {
+  feature_flgs: Record<
+    string,
+    {
       t: "i" | "b" | "s";
       v: string | boolean | number;
-    };
-  };
+    }
+  >;
   iat: number;
   iss: string;
   jti: string;
@@ -36,9 +37,9 @@ export type KindeAccessToken = {
   permissions: string[];
   scp: string[];
   sub: string;
-};
+}
 
-export type KindeIdToken = {
+export interface KindeIdToken {
   at_hash: string;
   aud: string[];
   auth_time: number;
@@ -55,6 +56,9 @@ export type KindeIdToken = {
   picture: string;
   sub: string;
   updated_at: number;
-};
+}
 
-export type KindePermission = { isGranted: boolean; orgCode: string | null };
+export interface KindePermission {
+  isGranted: boolean;
+  orgCode: string | null;
+}

@@ -23,10 +23,10 @@ describe("config", () => {
     expect(config.issuerUrl).toBe("https://test-issuer.kinde.com");
     expect(config.siteUrl).toBe("http://localhost:3000");
     expect(config.postLogoutRedirectUrl).toBe(
-      "http://localhost:3000/test-logout"
+      "http://localhost:3000/test-logout",
     );
     expect(config.postLoginRedirectUrl).toBe(
-      "http://localhost:3000/test-login"
+      "http://localhost:3000/test-login",
     );
     expect(config.audience).toBe("test-audience");
     expect(config.cookieMaxAge).toBe("3600");

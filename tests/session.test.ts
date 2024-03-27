@@ -1,7 +1,6 @@
-import { expect, test, vi, Mock } from "vitest";
+import { expect, test, vi, Mock, describe } from "vitest";
 import { createSessionManager } from "../src/session";
 import { installGlobals } from "@remix-run/node"; // You might need to install this dependency
-import { describe } from "node:test";
 
 installGlobals();
 
