@@ -98,7 +98,7 @@ export const getKindeSession = async (request) => {
         sessionManager,
         code.toLowerCase(),
         defaultValue,
-        type,
+        type
       );
     } catch (err) {
       console.error(err);
@@ -110,14 +110,14 @@ export const getKindeSession = async (request) => {
    *
    * @param {string} code
    * @param {boolean} defaultValue
-   * @returns {Promise<boolean>}
+   * @returns {Promise<boolean | null>}
    */
   const getBooleanFlag = async (code, defaultValue) => {
     try {
       return await kindeClient.getBooleanFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
       console.error(err);
@@ -129,14 +129,14 @@ export const getKindeSession = async (request) => {
    *
    * @param {string} code
    * @param {number} defaultValue
-   * @returns {Promise<number>}
+   * @returns {Promise<number | null>}
    */
   const getIntegerFlag = async (code, defaultValue) => {
     try {
       return await kindeClient.getIntegerFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
       console.error(err);
@@ -147,14 +147,14 @@ export const getKindeSession = async (request) => {
    *
    * @param {string} code
    * @param {string} defaultValue
-   * @returns {Promise<string>}
+   * @returns {Promise<string | null>}
    */
   const getStringFlag = async (code, defaultValue) => {
     try {
       return await kindeClient.getStringFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
       console.error(err);
