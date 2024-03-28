@@ -3,9 +3,13 @@ import { createCookieSessionStorage } from "@remix-run/node";
 /**
  *
  * @param {Request} request
- * @returns {Promise<{session: import("@remix-run/node").Session, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager, cookie: string, sessionStorage: import("@remix-run/node").SessionStorage<import("@remix-run/node").SessionData, import("@remix-run/node").SessionData>}>}
+ * @returns {Promise<{session: import("@remix-run/node").Session, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager, cookie: string | null, sessionStorage: import("@remix-run/node").SessionStorage<import("@remix-run/node").SessionData, import("@remix-run/node").SessionData>}>}
  */
 export const createSessionManager = async (request) => {
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET is not set in your env");
+  }
+
   const sessionStorage = createCookieSessionStorage({
     cookie: {
       name: "kinde_session",
@@ -64,7 +68,7 @@ export const createSessionManager = async (request) => {
         "post_login_redirect_url",
       ].forEach((key) => session.unset(key));
 
-      sessionStorage.destroySession(session);
+      await sessionStorage.destroySession(session);
       return Promise.resolve();
     },
   };
