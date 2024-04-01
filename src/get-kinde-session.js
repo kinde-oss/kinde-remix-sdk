@@ -38,6 +38,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<string | null>}
+   */
   const getToken = async () => {
     try {
       return await kindeClient.getToken(sessionManager);
@@ -55,6 +59,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<boolean>}
+   */
   const isAuthenticated = async () => {
     try {
       return await kindeClient.isAuthenticated(sessionManager);
@@ -64,6 +72,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<import("@kinde-oss/kinde-typescript-sdk").UserType | null>}
+   */
   const getUser = async () => {
     try {
       return await kindeClient.getUser(sessionManager);
@@ -77,6 +89,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<import("@kinde-oss/kinde-typescript-sdk").UserType | null>}
+   */
   const getUserProfile = async () => {
     try {
       return await kindeClient.getUserProfile(sessionManager);
@@ -91,6 +107,7 @@ export const getKindeSession = async (request) => {
    * @param {string} code
    * @param {boolean | string | number} defaultValue
    * @param {*} type
+   * @returns {Promise<import("@kinde-oss/kinde-typescript-sdk").GetFlagType | null>}
    */
   const getFlag = async (code, defaultValue, type) => {
     try {
@@ -162,6 +179,11 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @param {string} permission
+   * @returns {Promise<{orgCode: string | null; isGranted: boolean}| null>}
+   */
   const getPermission = async (permission) => {
     try {
       return await kindeClient.getPermission(sessionManager, permission);
@@ -171,6 +193,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<{permissions: string[]; orgCode: string | null} | []>}
+   */
   const getPermissions = async () => {
     try {
       return await kindeClient.getPermissions(sessionManager);
@@ -180,6 +206,10 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<{orgCode: string | null} | null>}
+   */
   const getOrganization = async () => {
     try {
       return await kindeClient.getOrganization(sessionManager);
@@ -189,12 +219,16 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  /**
+   *
+   * @returns {Promise<{orgCodes: string[]} | []>}
+   */
   const getUserOrganizations = async () => {
     try {
       return await kindeClient.getUserOrganizations(sessionManager);
     } catch (err) {
       console.error(err);
-      return [];
+      return { orgCodes: [] };
     }
   };
 
