@@ -1,4 +1,5 @@
 import { createCookieSessionStorage } from "@remix-run/node";
+import { config } from "../config";
 
 /**
  *
@@ -6,7 +7,7 @@ import { createCookieSessionStorage } from "@remix-run/node";
  * @returns {Promise<{session: import("@remix-run/node").Session, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager, cookie: string | null, sessionStorage: import("@remix-run/node").SessionStorage<import("@remix-run/node").SessionData, import("@remix-run/node").SessionData>}>}
  */
 export const createSessionManager = async (request) => {
-  if (!process.env.SESSION_SECRET) {
+  if (!config.sessionSecret) {
     throw new Error("SESSION_SECRET is not set in your env");
   }
 
@@ -16,7 +17,7 @@ export const createSessionManager = async (request) => {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
-      secrets: [process.env.SESSION_SECRET],
+      secrets: [config.sessionSecret],
       secure: process.env.NODE_ENV === "production",
     },
   });

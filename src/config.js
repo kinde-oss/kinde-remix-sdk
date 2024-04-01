@@ -7,4 +7,5 @@ export const config = {
   postLoginRedirectUrl: process.env.KINDE_POST_LOGIN_REDIRECT_URL,
   audience: process.env.KINDE_AUDIENCE,
   cookieMaxAge: process.env.KINDE_COOKIE_MAX_AGE,
+  sessionSecret: process.env.SESSION_SECRET,
 };
