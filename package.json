@@ -1,21 +1,31 @@
 {
-  "name": "@kinde-oss/kinde-auth-remix-sdk",
-  "version": "1.0.2-alpha.1",
+  "name": "@kinde-oss/kinde-remix-sdk",
+  "version": "1.0.0-beta.2",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
   "typings": "dist/types/index.d.ts",
   "scripts": {
-    "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && npx rollup --c",
-    "release": "npm run build && npx changelogen --release",
+    "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && genversion --es6 src/utils/version.js && npx rollup --c",
+    "release": "release-it",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "dev:prepare": "rm -rf playground && git clone https://github.com/kinde-starter-kits/kinde-auth-remix-starter-kit.git playground && npm link && cd playground && mv .env.sample .env && npm uninstall @kinde-oss/kinde-auth-remix-sdk && rm -rf .git && npm link @kinde-oss/kinde-auth-remix-sdk",
+    "dev:prepare": "rm -rf playground && git clone https://github.com/kinde-starter-kits/kinde-auth-remix-starter-kit.git playground && npm link && cd playground && mv .env.sample .env && npm uninstall @kinde-oss/kinde-remix-sdk && rm -rf .git && npm link @kinde-oss/kinde-remix-sdk",
     "dev": "cd playground && npx remix dev --manual",
     "lint": "eslint . --ext .ts --fix && prettier --write ."
   },
-  "author": "",
+  "author": {
+    "name": "Kinde",
+    "email": "engineering@kinde.com",
+    "url": "https://kinde.com"
+  },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kinde-oss/kinde-remix-sdk"
+  },
+  "bugs": "https://github.com/kinde-oss/kinde-remix-sdk",
+  "homepage": "https://kinde.com",
   "dependencies": {
     "@kinde-oss/kinde-typescript-sdk": "^2.8.0",
     "jwt-decode": "^4.0.0",
@@ -31,6 +41,8 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
+    "genversion": "^3.2.0",
+    "release-it": "^17.1.1",
     "rollup": "^4.9.4",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0"

@@ -5,16 +5,23 @@ import {
 import { redirect } from "@remix-run/node";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
+import { version } from "./utils/version";
 
 export const kindeClient = createKindeServerClient(
   GrantType.AUTHORIZATION_CODE,
   {
-    authDomain: config.issuerUrl,
-    clientId: config.clientId,
+    authDomain:
+      config.issuerUrl || "Set your issuer URL in your environment variables.",
+    clientId:
+      config.clientId || "Set your client ID in your environment variables.",
     clientSecret: config.clientSecret,
     redirectURL: config.siteUrl + "/kinde-auth/callback",
-    logoutRedirectURL: config.postLogoutRedirectUrl,
-  },
+    logoutRedirectURL:
+      config.postLogoutRedirectUrl ||
+      "Set your logout redirect URL in your environment variables.",
+    frameworkVersion: version,
+    framework: "Remix",
+  }
 );
 
 /**
@@ -42,7 +49,9 @@ export const handleAuth = async (request, route) => {
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: parseInt(config.cookieMaxAge) || undefined,
+          maxAge: config.cookieMaxAge
+            ? parseInt(config.cookieMaxAge)
+            : undefined,
         }),
       },
     });
@@ -62,7 +71,9 @@ export const handleAuth = async (request, route) => {
     return redirect(authUrl.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: parseInt(config.cookieMaxAge) || undefined,
+          maxAge: config.cookieMaxAge
+            ? parseInt(config.cookieMaxAge)
+            : undefined,
         }),
       },
     });
@@ -72,7 +83,7 @@ export const handleAuth = async (request, route) => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url",
+      "post_login_redirect_url"
     );
 
     if (postLoginRedirectURLFromMemory) {
@@ -81,12 +92,15 @@ export const handleAuth = async (request, route) => {
 
     const postLoginRedirectURL = postLoginRedirectURLFromMemory
       ? postLoginRedirectURLFromMemory
-      : config.postLoginRedirectUrl;
+      : config.postLoginRedirectUrl ||
+        "Set your post login redirect URL in your environment variables.";
 
     return redirect(postLoginRedirectURL.toString(), {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: parseInt(config.cookieMaxAge) || undefined,
+          maxAge: config.cookieMaxAge
+            ? parseInt(config.cookieMaxAge)
+            : undefined,
         }),
       },
     });
