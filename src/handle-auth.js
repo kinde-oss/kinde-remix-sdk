@@ -5,6 +5,7 @@ import {
 import { redirect } from "@remix-run/node";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
+import { version } from "./utils/version";
 
 export const kindeClient = createKindeServerClient(
   GrantType.AUTHORIZATION_CODE,
@@ -18,7 +19,7 @@ export const kindeClient = createKindeServerClient(
     logoutRedirectURL:
       config.postLogoutRedirectUrl ||
       "Set your logout redirect URL in your environment variables.",
-    frameworkVersion: "1.0",
+    frameworkVersion: version,
     framework: "Remix",
   }
 );
