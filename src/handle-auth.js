@@ -5,6 +5,7 @@ import {
 import { redirect } from "@remix-run/node";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
+import { generateCookieHeader } from "./utils/cookies";
 import { version } from "./utils/version";
 
 export const kindeClient = createKindeServerClient(
@@ -31,8 +32,7 @@ export const kindeClient = createKindeServerClient(
  * @returns
  */
 export const handleAuth = async (request, route) => {
-  const { session, sessionManager, sessionStorage } =
-    await createSessionManager(request);
+  const { sessionManager, cookies } = await createSessionManager(request);
 
   const login = async () => {
     const { searchParams } = new URL(request.url);
@@ -43,17 +43,13 @@ export const handleAuth = async (request, route) => {
     const postLoginRedirecturl = searchParams.get("returnTo");
 
     if (postLoginRedirecturl) {
-      session.set("post_login_redirect_url", postLoginRedirecturl);
+      cookies.set("post_login_redirect_url", postLoginRedirecturl);
     }
 
+    const headers = generateCookieHeader(request, cookies);
+
     return redirect(authUrl.toString(), {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge
-            ? parseInt(config.cookieMaxAge)
-            : undefined,
-        }),
-      },
+      headers,
     });
   };
 
@@ -65,17 +61,11 @@ export const handleAuth = async (request, route) => {
     const postLoginRedirecturl = searchParams.get("returnTo");
 
     if (postLoginRedirecturl) {
-      session.set("post_login_redirect_url", postLoginRedirecturl);
+      cookies.set("post_login_redirect_url", postLoginRedirecturl);
     }
-
+    const headers = generateCookieHeader(request, cookies);
     return redirect(authUrl.toString(), {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge
-            ? parseInt(config.cookieMaxAge)
-            : undefined,
-        }),
-      },
+      headers,
     });
   };
 
@@ -94,25 +84,17 @@ export const handleAuth = async (request, route) => {
       ? postLoginRedirectURLFromMemory
       : config.postLoginRedirectUrl ||
         "Set your post login redirect URL in your environment variables.";
-
+    const headers = generateCookieHeader(request, cookies);
     return redirect(postLoginRedirectURL.toString(), {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session, {
-          maxAge: config.cookieMaxAge
-            ? parseInt(config.cookieMaxAge)
-            : undefined,
-        }),
-      },
+      headers,
     });
   };
 
   const logout = async () => {
     const authUrl = await kindeClient.logout(sessionManager);
-
+    const headers = generateCookieHeader(request, cookies);
     return redirect(authUrl.toString(), {
-      headers: {
-        "Set-Cookie": await sessionStorage.destroySession(session),
-      },
+      headers,
     });
   };
 
