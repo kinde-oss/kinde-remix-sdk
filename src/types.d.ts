@@ -23,7 +23,7 @@ export interface KindeAccessToken {
     };
   };
   exp: number;
-  feature_flgs: Record<
+  feature_flags: Record<
     string,
     {
       t: "i" | "b" | "s";

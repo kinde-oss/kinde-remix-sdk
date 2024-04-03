@@ -5,11 +5,18 @@ export default {
     {
       file: "dist/index.js",
       format: "esm",
+      exports: "named",
     },
     {
       file: "dist/cjs/index.js",
       format: "cjs",
+      exports: "named",
     },
   ],
   plugins: [terser()],
+  external: [
+    "@kinde-oss/kinde-typescript-sdk",
+    "@remix-run/node",
+    "universal-cookie",
+  ],
 };

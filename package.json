@@ -5,6 +5,25 @@
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
   "typings": "dist/types/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./types": {
+      "import": {
+        "types": "./dist/types/types.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "scripts": {
     "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && genversion --es6 src/utils/version.js && npx rollup --c",
     "release": "release-it",
@@ -29,7 +48,8 @@
   "dependencies": {
     "@kinde-oss/kinde-typescript-sdk": "^2.8.0",
     "jwt-decode": "^4.0.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "universal-cookie": "^7.1.4"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
