@@ -1,12 +1,13 @@
 import { kindeClient } from "./handle-auth";
 import { createSessionManager } from "./session/session";
+import { generateCookieHeader } from "./utils/cookies";
 
 /**
  *
  * @param {Request} request
  */
 export const getKindeSession = async (request) => {
-  const { sessionManager } = await createSessionManager(request);
+  const { sessionManager, cookies } = await createSessionManager(request);
 
   /**
    *
@@ -53,7 +54,9 @@ export const getKindeSession = async (request) => {
 
   const refreshTokens = async () => {
     try {
-      return await kindeClient.refreshTokens(sessionManager);
+      await kindeClient.refreshTokens(sessionManager);
+      const headers = generateCookieHeader(request, cookies);
+      return headers;
     } catch (error) {
       console.error(error);
     }

@@ -56,16 +56,13 @@ export const generateCookieHeader = (request, cookies) => {
   const oldCookiesKeys = Object.keys(oldCookies.getAll());
   const newCookiesKeys = Object.keys(cookies.getAll());
 
-  const cookiesToBeAdded = newCookiesKeys.filter(
-    (x) => !oldCookiesKeys.includes(x)
-  );
   const cookiesToBeDeleted = oldCookiesKeys.filter(
     (x) => !newCookiesKeys.includes(x)
   );
 
   let headers = new Headers();
 
-  cookiesToBeAdded.forEach((key) => {
+  newCookiesKeys.forEach((key) => {
     headers.append(
       "Set-Cookie",
       serializeCookie(key, cookies.get(key), {
