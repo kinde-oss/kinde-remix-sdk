@@ -59,6 +59,7 @@ export const getKindeSession = async (request) => {
       return headers;
     } catch (error) {
       console.error(error);
+      return null;
     }
   };
 

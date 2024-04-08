@@ -16,8 +16,7 @@ export const createSessionManager = async (request) => {
      * @returns {Promise<any>} The session item.
      */
     async getSessionItem(key) {
-      const res = cookies.get(key);
-      return res;
+      return cookies.get(key);
     },
 
     /**
@@ -28,7 +27,6 @@ export const createSessionManager = async (request) => {
      */
     async setSessionItem(key, value) {
       cookies.set(key, value, { path: "/" });
-      return;
     },
 
     /**
@@ -38,7 +36,6 @@ export const createSessionManager = async (request) => {
      */
     async removeSessionItem(key) {
       cookies.remove(key, { path: "/" });
-      return;
     },
 
     /**
