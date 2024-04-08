@@ -1,28 +1,12 @@
-import { createCookieSessionStorage } from "@remix-run/node";
-import { config } from "../config";
+import Cookies from "universal-cookie";
 
 /**
  *
  * @param {Request} request
- * @returns {Promise<{session: import("@remix-run/node").Session, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager, cookie: string | null, sessionStorage: import("@remix-run/node").SessionStorage<import("@remix-run/node").SessionData, import("@remix-run/node").SessionData>}>}
+ * @returns {Promise<{cookies: Cookies, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
  */
 export const createSessionManager = async (request) => {
-  if (!config.sessionSecret) {
-    throw new Error("SESSION_SECRET is not set in your env");
-  }
-
-  const sessionStorage = createCookieSessionStorage({
-    cookie: {
-      name: "kinde_session",
-      httpOnly: true,
-      path: "/",
-      sameSite: "lax",
-      secrets: [config.sessionSecret],
-      secure: process.env.NODE_ENV === "production",
-    },
-  });
-  const cookie = request.headers.get("Cookie");
-  const session = await sessionStorage.getSession(cookie);
+  const cookies = new Cookies(request.headers.get("Cookie"), { path: "/" });
 
   /** @type {import("@kinde-oss/kinde-typescript-sdk").SessionManager} */
   const sessionManager = {
@@ -32,7 +16,8 @@ export const createSessionManager = async (request) => {
      * @returns {Promise<any>} The session item.
      */
     async getSessionItem(key) {
-      return session.get(key);
+      const res = cookies.get(key);
+      return res;
     },
 
     /**
@@ -42,7 +27,8 @@ export const createSessionManager = async (request) => {
      * @returns {Promise<void>}
      */
     async setSessionItem(key, value) {
-      return session.set(key, value);
+      cookies.set(key, value, { path: "/" });
+      return;
     },
 
     /**
@@ -51,7 +37,8 @@ export const createSessionManager = async (request) => {
      * @returns {Promise<void>}
      */
     async removeSessionItem(key) {
-      return session.unset(key);
+      cookies.remove(key, { path: "/" });
+      return;
     },
 
     /**
@@ -67,17 +54,14 @@ export const createSessionManager = async (request) => {
         "user",
         "refresh_token",
         "post_login_redirect_url",
-      ].forEach((key) => session.unset(key));
+      ].forEach((key) => cookies.remove(key, { path: "/" }));
 
-      await sessionStorage.destroySession(session);
       return Promise.resolve();
     },
   };
 
   return {
-    session,
+    cookies,
     sessionManager,
-    cookie,
-    sessionStorage,
   };
 };
