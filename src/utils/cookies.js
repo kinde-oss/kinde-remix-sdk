@@ -67,6 +67,9 @@ export const generateCookieHeader = (request, cookies) => {
       "Set-Cookie",
       serializeCookie(key, cookies.get(key), {
         path: "/",
+        sameSite: "Lax",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
       })
     );
   });
@@ -77,6 +80,9 @@ export const generateCookieHeader = (request, cookies) => {
       serializeCookie(key, 0, {
         path: "/",
         maxAge: -1,
+        sameSite: "Lax",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
       })
     );
   });
