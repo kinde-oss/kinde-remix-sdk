@@ -60,7 +60,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getClaim).toHaveBeenCalledWith(
       expect.anything(),
       "test",
-      "access_token"
+      "access_token",
     );
     expect(claim).toBe("test-claim");
   });
@@ -75,7 +75,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getClaim).toHaveBeenCalledWith(
       expect.anything(),
       "test",
-      "access_token"
+      "access_token",
     );
     expect(claim).toBe(null);
   });
@@ -88,7 +88,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getClaimValue).toHaveBeenCalledWith(
       expect.anything(),
       "test",
-      "access_token"
+      "access_token",
     );
     expect(claim).toBe("test-claim");
   });
@@ -103,7 +103,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getClaimValue).toHaveBeenCalledWith(
       expect.anything(),
       "test",
-      "access_token"
+      "access_token",
     );
     expect(claim).toBe(null);
   });
@@ -217,7 +217,7 @@ describe("getKindeSession", () => {
       expect.anything(),
       "test-flag",
       "default",
-      "s"
+      "s",
     );
     expect(claim).toStrictEqual("flag");
   });
@@ -240,7 +240,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getBooleanFlag).toHaveBeenCalledWith(
       expect.anything(),
       "test-flag",
-      false
+      false,
     );
     expect(claim).toStrictEqual(true);
   });
@@ -263,7 +263,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getStringFlag).toHaveBeenCalledWith(
       expect.anything(),
       "test-flag",
-      "false"
+      "false",
     );
     expect(claim).toStrictEqual(true);
   });
@@ -286,7 +286,7 @@ describe("getKindeSession", () => {
     expect(kindeClient.getIntegerFlag).toHaveBeenCalledWith(
       expect.anything(),
       "test-flag",
-      1
+      1,
     );
     expect(claim).toStrictEqual(true);
   });
@@ -308,7 +308,7 @@ describe("getKindeSession", () => {
     const claim = await session.getPermission("test-permission");
     expect(kindeClient.getPermission).toHaveBeenCalledWith(
       expect.anything(),
-      "test-permission"
+      "test-permission",
     );
     expect(claim).toStrictEqual("permission");
   });
@@ -369,7 +369,7 @@ describe("getKindeSession", () => {
       .mockResolvedValueOnce("org_code");
     const claim = await session.getUserOrganizations();
     expect(kindeClient.getUserOrganizations).toHaveBeenCalledWith(
-      expect.anything()
+      expect.anything(),
     );
     expect(claim).toStrictEqual("org_code");
   });

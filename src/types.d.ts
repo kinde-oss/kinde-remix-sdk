@@ -11,7 +11,7 @@ export interface KindeAccessToken {
   azp: string;
   billing: {
     has_payment_details: boolean;
-    org_entitlements: any[] | null;
+    org_entitlements: string[] | null;
     plan: {
       code: string | null;
       created_on: number | null;

@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Enabling pre-post scripts
         run: pnpm config set enable-pre-post-scripts true
       - run: pnpm install
@@ -38,5 +38,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            slug: kinde-oss/kinde-remix-sdk
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: kinde-oss/kinde-remix-sdk
