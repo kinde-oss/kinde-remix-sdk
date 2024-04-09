@@ -22,7 +22,7 @@ export const kindeClient = createKindeServerClient(
       "Set your logout redirect URL in your environment variables.",
     frameworkVersion: version,
     framework: "Remix",
-  }
+  },
 );
 
 /**
@@ -73,7 +73,7 @@ export const handleAuth = async (request, route) => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url"
+      "post_login_redirect_url",
     );
 
     if (postLoginRedirectURLFromMemory) {

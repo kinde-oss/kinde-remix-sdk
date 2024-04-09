@@ -119,7 +119,7 @@ export const getKindeSession = async (request) => {
         sessionManager,
         code.toLowerCase(),
         defaultValue,
-        type
+        type,
       );
     } catch (err) {
       console.error(err);
@@ -138,7 +138,7 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getBooleanFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue
+        defaultValue,
       );
     } catch (err) {
       console.error(err);
@@ -157,7 +157,7 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getIntegerFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue
+        defaultValue,
       );
     } catch (err) {
       console.error(err);
@@ -175,7 +175,7 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getStringFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue
+        defaultValue,
       );
     } catch (err) {
       console.error(err);

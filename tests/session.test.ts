@@ -21,7 +21,7 @@ describe("Session tests", () => {
     await sessionManager.setSessionItem("someKey", "someNewValue");
 
     expect(await sessionManager.getSessionItem("someKey")).toEqual(
-      "someNewValue"
+      "someNewValue",
     );
   });
 
@@ -46,7 +46,7 @@ describe("Session tests", () => {
 
     expect(await sessionManager.getSessionItem("someKey")).toEqual("someValue");
     expect(await sessionManager.getSessionItem("someKey2")).toEqual(
-      "someValue2"
+      "someValue2",
     );
     expect(await sessionManager.getSessionItem("access_token")).toEqual("asds");
 
@@ -54,10 +54,10 @@ describe("Session tests", () => {
 
     expect(await sessionManager.getSessionItem("someKey")).toEqual("someValue");
     expect(await sessionManager.getSessionItem("someKey2")).toEqual(
-      "someValue2"
+      "someValue2",
     );
     expect(
-      await sessionManager.getSessionItem("access_token")
+      await sessionManager.getSessionItem("access_token"),
     ).not.toBeDefined();
   });
 });
