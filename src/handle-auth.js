@@ -17,6 +17,7 @@ export const kindeClient = createKindeServerClient(
       config.clientId || "Set your client ID in your environment variables.",
     clientSecret: config.clientSecret,
     redirectURL: config.siteUrl + "/kinde-auth/callback",
+    audience: config.audience,
     logoutRedirectURL:
       config.postLogoutRedirectUrl ||
       "Set your logout redirect URL in your environment variables.",
