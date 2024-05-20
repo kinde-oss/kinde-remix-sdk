@@ -1,8 +1,9 @@
 import {
   GrantType,
   createKindeServerClient,
+  validateClientSecret,
 } from "@kinde-oss/kinde-typescript-sdk";
-import { redirect } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
 import { generateCookieHeader } from "./utils/cookies";
@@ -23,7 +24,7 @@ export const kindeClient = createKindeServerClient(
       "Set your logout redirect URL in your environment variables.",
     frameworkVersion: version,
     framework: "Remix",
-  },
+  }
 );
 
 /**
@@ -70,11 +71,26 @@ export const handleAuth = async (request, route) => {
     });
   };
 
+  const health = async () => {
+    return json({
+      siteUrl: config.siteUrl,
+      issuerURL: config.issuerURL,
+      clientID: config.clientId,
+      clientSecret: validateClientSecret(config.clientSecret || "")
+        ? "Set correctly"
+        : "Not set correctly",
+      postLogoutRedirectUrl: config.postLogoutRedirectUrl,
+      postLoginRedirectUrl: config.postLoginRedirectUrl,
+      audience: config.audience,
+      cookieMaxAge: config.cookieMaxAge,
+    });
+  };
+
   const callback = async () => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url",
+      "post_login_redirect_url"
     );
 
     if (postLoginRedirectURLFromMemory) {
@@ -108,5 +124,7 @@ export const handleAuth = async (request, route) => {
       return callback();
     case "logout":
       return logout();
+    case "health":
+      return health();
   }
 };
