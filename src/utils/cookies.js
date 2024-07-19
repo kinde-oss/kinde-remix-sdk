@@ -64,7 +64,7 @@ export const generateCookieHeader = (request, cookies) => {
   });
   const oldCookiesKeys = Object.keys(oldCookies.getAll());
   const newCookiesKeys = Object.keys(cookies.getAll()).filter((cookie) =>
-    KINDE_COOKIES.includes(cookie)
+    KINDE_COOKIES.includes(cookie),
   );
 
   const cookiesToBeDeleted = oldCookiesKeys
@@ -81,7 +81,7 @@ export const generateCookieHeader = (request, cookies) => {
         sameSite: "Lax",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-      })
+      }),
     );
   });
 
@@ -94,7 +94,7 @@ export const generateCookieHeader = (request, cookies) => {
         sameSite: "Lax",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-      })
+      }),
     );
   });
 
