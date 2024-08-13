@@ -52,17 +52,6 @@ export const getKindeSession = async (request) => {
     }
   };
 
-  const refreshTokens = async () => {
-    try {
-      await kindeClient.refreshTokens(sessionManager);
-      const headers = generateCookieHeader(request, cookies);
-      return headers;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
   /**
    *
    * @returns {Promise<boolean>}
@@ -236,7 +225,21 @@ export const getKindeSession = async (request) => {
     }
   };
 
+  const refreshTokens = async () => {
+    try {
+      await kindeClient.refreshTokens(sessionManager);
+      const headers = generateCookieHeader(request, cookies);
+      return headers;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const headers = await refreshTokens();
+
   return {
+    headers,
     getClaim,
     getClaimValue,
     getOrganization,
