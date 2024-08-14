@@ -24,16 +24,17 @@ export const kindeClient = createKindeServerClient(
       "Set your logout redirect URL in your environment variables.",
     frameworkVersion: version,
     framework: "Remix",
-  },
+  }
 );
 
 /**
  *
  * @param {Request} request
- * @param {*} route
+ * @param {string | undefined} route
+ * @param {{onRedirectCallback?: (props: {user: import("./types").KindeUser}) => void}} [options]
  * @returns
  */
-export const handleAuth = async (request, route) => {
+export const handleAuth = async (request, route, options) => {
   const { sessionManager, cookies } = await createSessionManager(request);
 
   const login = async () => {
@@ -90,7 +91,7 @@ export const handleAuth = async (request, route) => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url",
+      "post_login_redirect_url"
     );
 
     if (postLoginRedirectURLFromMemory) {
@@ -102,6 +103,14 @@ export const handleAuth = async (request, route) => {
       : config.postLoginRedirectUrl ||
         "Set your post login redirect URL in your environment variables.";
     const headers = generateCookieHeader(request, cookies);
+
+    /**
+     * @type {any}
+     */
+    const user = await sessionManager.getSessionItem("user");
+
+    options?.onRedirectCallback?.({ user });
+
     return redirect(postLoginRedirectURL.toString(), {
       headers,
     });
