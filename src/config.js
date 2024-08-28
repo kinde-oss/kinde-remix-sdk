@@ -8,4 +8,5 @@ export const config = {
   audience: process.env.KINDE_AUDIENCE,
   cookieMaxAge: process.env.KINDE_COOKIE_MAX_AGE,
   sessionSecret: process.env.SESSION_SECRET,
+  isDebugMode: process.env.IS_DEBUG_MODE === "true",
 };

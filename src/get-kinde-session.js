@@ -1,3 +1,4 @@
+import { config } from "./config";
 import { kindeClient } from "./handle-auth";
 import { createSessionManager } from "./session/session";
 import { generateCookieHeader } from "./utils/cookies";
@@ -19,7 +20,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getClaimValue(sessionManager, claim, type);
     } catch (error) {
-      console.error(error);
+      if (config.isDebugMode) console.debug(error);
       return null;
     }
   };
@@ -34,7 +35,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getClaim(sessionManager, claim, type);
     } catch (error) {
-      console.error(error);
+      if (config.isDebugMode) console.debug(error);
       return null;
     }
   };
@@ -47,7 +48,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getToken(sessionManager);
     } catch (error) {
-      console.error(error);
+      if (config.isDebugMode) console.debug(error);
       return null;
     }
   };
@@ -60,7 +61,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.isAuthenticated(sessionManager);
     } catch (error) {
-      console.error(error);
+      if (config.isDebugMode) console.debug(error);
       return false;
     }
   };
@@ -77,7 +78,7 @@ export const getKindeSession = async (request) => {
         error.message !==
         "Cannot get user details, no authentication credential found"
       )
-        console.error(error);
+        if (config.isDebugMode) console.debug(error);
       return null;
     }
   };
@@ -90,7 +91,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getUserProfile(sessionManager);
     } catch (error) {
-      console.error(error);
+      if (config.isDebugMode) console.debug(error);
       return null;
     }
   };
@@ -108,10 +109,10 @@ export const getKindeSession = async (request) => {
         sessionManager,
         code.toLowerCase(),
         defaultValue,
-        type,
+        type
       );
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -127,10 +128,10 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getBooleanFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -146,10 +147,10 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getIntegerFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -164,10 +165,10 @@ export const getKindeSession = async (request) => {
       return await kindeClient.getStringFlag(
         sessionManager,
         code.toLowerCase(),
-        defaultValue,
+        defaultValue
       );
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -181,7 +182,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getPermission(sessionManager, permission);
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -194,7 +195,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getPermissions(sessionManager);
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return [];
     }
   };
@@ -207,7 +208,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getOrganization(sessionManager);
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return null;
     }
   };
@@ -220,7 +221,7 @@ export const getKindeSession = async (request) => {
     try {
       return await kindeClient.getUserOrganizations(sessionManager);
     } catch (err) {
-      console.error(err);
+      if (config.isDebugMode) console.debug(err);
       return { orgCodes: [] };
     }
   };
@@ -231,8 +232,10 @@ export const getKindeSession = async (request) => {
       const headers = generateCookieHeader(request, cookies);
       return headers;
     } catch (error) {
-      console.error(error);
-      return null;
+      if (config.isDebugMode) {
+        console.debug(error);
+      }
+      return new Headers();
     }
   };
 
