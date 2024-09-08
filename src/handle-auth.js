@@ -24,7 +24,7 @@ export const kindeClient = createKindeServerClient(
       "Set your logout redirect URL in your environment variables.",
     frameworkVersion: version,
     framework: "Remix",
-  },
+  }
 );
 
 /**
@@ -91,7 +91,7 @@ export const handleAuth = async (request, route, options) => {
     await kindeClient.handleRedirectToApp(sessionManager, new URL(request.url));
 
     const postLoginRedirectURLFromMemory = await sessionManager.getSessionItem(
-      "post_login_redirect_url",
+      "post_login_redirect_url"
     );
 
     if (postLoginRedirectURLFromMemory) {
@@ -104,15 +104,7 @@ export const handleAuth = async (request, route, options) => {
         "Set your post login redirect URL in your environment variables.";
     const headers = generateCookieHeader(request, cookies);
 
-    /**
-     * @type {any}
-     */
-    const user = await sessionManager.getSessionItem("user");
-
-    // console.log("User", user);
-    // console.log("request", request);
-    console.log("cookies", cookies);
-    console.log("user", cookies.get("user"));
+    const user = await kindeClient.getUser(sessionManager);
 
     options?.onRedirectCallback?.({ user });
 
