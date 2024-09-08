@@ -109,6 +109,11 @@ export const handleAuth = async (request, route, options) => {
      */
     const user = await sessionManager.getSessionItem("user");
 
+    // console.log("User", user);
+    // console.log("request", request);
+    console.log("cookies", cookies);
+    console.log("user", cookies.get("user"));
+
     options?.onRedirectCallback?.({ user });
 
     return redirect(postLoginRedirectURL.toString(), {
