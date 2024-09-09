@@ -13,7 +13,7 @@ describe("handleAuth", () => {
 
   it("should handle login requests", async () => {
     const requestEvent = new Request(
-      "http://localhost/oop/?returnTo=/redirect",
+      "http://localhost/oop/?returnTo=/redirect"
     );
 
     const loginMock = vi.fn().mockImplementation(async () => {
@@ -33,7 +33,7 @@ describe("handleAuth", () => {
 
   it("should handle register requests", async () => {
     const requestEvent = new Request(
-      "http://localhost/oop/?returnTo=/redirect",
+      "http://localhost/oop/?returnTo=/redirect"
     );
 
     const registerMock = vi.fn().mockImplementation(async () => {
@@ -71,11 +71,24 @@ describe("handleAuth", () => {
     const callback = vi.fn().mockImplementation(async () => {
       return new URL("http://localhost/logged-out");
     });
+
+    const getUserMock = vi.fn().mockImplementation(async () => {
+      return {
+        family_name: "Test",
+        given_name: "Tom",
+        picture:
+          "https://lh3.googleusercontent.com/a/ACg8ocLSV5BzAauEPx7KiftgzBclIOZN7AGwr-Yp194XPMaCEqAr0e3e=s96-c",
+        email: "peterphanouvong@gmail.com",
+        id: "kp:a912075d0172416787920727ddcf087e",
+      };
+    });
+
     kindeClient.handleRedirectToApp = callback;
+    kindeClient.getUser = getUserMock;
     const res = await handleAuth(requestEvent, "callback");
     expect(res?.status).toBe(302);
     expect(res?.headers.get("location")).toBe(
-      "http://localhost:3000/test-login",
+      "http://localhost:3000/test-login"
     );
   });
 });
