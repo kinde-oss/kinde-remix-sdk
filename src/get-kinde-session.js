@@ -228,7 +228,7 @@ export const getKindeSession = async (request) => {
 
   const refreshTokens = async () => {
     try {
-      await kindeClient.refreshTokens(sessionManager);
+      await kindeClient.getToken(sessionManager);
       const headers = generateCookieHeader(request, cookies);
       return headers;
     } catch (error) {
