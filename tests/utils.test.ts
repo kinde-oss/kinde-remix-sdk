@@ -35,7 +35,7 @@ describe("Utils tests", () => {
     expect(res).toBeTypeOf("object");
     const setCookie = res.getSetCookie();
     expect(setCookie).toContain(
-      "access_token=0; Max-Age=-1; Path=/; HttpOnly; SameSite=Lax",
+      "access_token=; Max-Age=-1; Path=/; HttpOnly; SameSite=Lax",
     );
   });
 });
