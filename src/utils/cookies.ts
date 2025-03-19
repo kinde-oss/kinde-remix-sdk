@@ -1,3 +1,4 @@
+// @ts-ignore
 import Cookies from "universal-cookie";
 
 const KINDE_COOKIES = [
@@ -9,14 +10,24 @@ const KINDE_COOKIES = [
   "post_login_redirect_url",
 ];
 
+interface CookieOptions {
+  maxAge?: number, 
+  domain?: string, 
+  path?: string, 
+  expires?: Date, 
+  httpOnly?: boolean, 
+  secure?: boolean, 
+  sameSite?: "Strict" | "Lax" | "None" | "Secure"
+}
+
 /**
  *
  * @param {string} name
  * @param {object | string} value
- * @param {{maxAge?: number, domain?: string, path?:string, expires?: any, httpOnly?: boolean, secure?: boolean, sameSite?: "Strict" | "Lax" | "None" | "Secure"}} options
+ * @param {CookieOptions} options
  * @returns
  */
-function serializeCookie(name, value, options = {}) {
+function serializeCookie(name: string, value: string | object, options: CookieOptions = {}) {
   const cookieParts = [
     `${encodeURIComponent(name)}=${encodeURIComponent(typeof value === "object" ? JSON.stringify(value) : value)}`,
   ];
@@ -59,9 +70,9 @@ function serializeCookie(name, value, options = {}) {
  * @returns {Headers}
  */
 export const generateCookieHeader = (request, cookies) => {
-  const oldCookies = new Cookies(request.headers.get("Cookie"), {
-    path: "/",
-  });
+  const cookieHeader = request.headers.get("Cookie");
+  // @ts-ignore
+  const oldCookies = cookieHeader ? new Cookies(cookieHeader, { path: "/" }) : new Cookies(null, { path: "/" });
   const oldCookiesKeys = Object.keys(oldCookies.getAll());
   const newCookiesKeys = Object.keys(cookies.getAll()).filter((cookie) =>
     KINDE_COOKIES.includes(cookie),
@@ -71,7 +82,7 @@ export const generateCookieHeader = (request, cookies) => {
     .filter((cookie) => KINDE_COOKIES.includes(cookie))
     .filter((x) => !newCookiesKeys.includes(x));
 
-  let headers = new Headers();
+  const headers = new Headers();
 
   newCookiesKeys.forEach((key) => {
     headers.append(
@@ -88,7 +99,7 @@ export const generateCookieHeader = (request, cookies) => {
   cookiesToBeDeleted.forEach((key) => {
     headers.append(
       "Set-Cookie",
-      serializeCookie(key, 0, {
+      serializeCookie(key, '', {
         path: "/",
         maxAge: -1,
         sameSite: "Lax",

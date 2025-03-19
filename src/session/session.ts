@@ -1,12 +1,15 @@
-import Cookies from "universal-cookie";
+// @ts-ignore
+import Cookies, {Cookie} from 'universal-cookie';
 
 /**
  *
  * @param {Request} request
- * @returns {Promise<{cookies: Cookies, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
+ * @returns {Promise<{cookies: Cookie, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
  */
-export const createSessionManager = async (request) => {
-  const cookies = new Cookies(request.headers.get("Cookie"), { path: "/" });
+export const createSessionManager = async (request: Request): Promise<{ cookies: Cookie; sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager; }> => {
+  const cookieHeader = request.headers.get("Cookie");
+  // @ts-ignore
+  const cookies = cookieHeader ? new Cookies(cookieHeader, { path: "/" }) : new Cookies(null, { path: "/" });
 
   /** @type {import("@kinde-oss/kinde-typescript-sdk").SessionManager} */
   const sessionManager = {

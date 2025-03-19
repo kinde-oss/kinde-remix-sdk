@@ -3,11 +3,12 @@ import {
   createKindeServerClient,
   validateClientSecret,
 } from "@kinde-oss/kinde-typescript-sdk";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
 import { generateCookieHeader } from "./utils/cookies";
-import { version } from "./utils/version";
+import { version } from "./utils/version.js";
+import { KindeUser } from "./types";
 
 export const kindeClient = createKindeServerClient(
   GrantType.AUTHORIZATION_CODE,
@@ -34,7 +35,7 @@ export const kindeClient = createKindeServerClient(
  * @param {{onRedirectCallback?: (props: {user: import("./types").KindeUser}) => void}} [options]
  * @returns
  */
-export const handleAuth = async (request, route, options) => {
+export const handleAuth = async (request: Request, route: string | undefined, options: { onRedirectCallback?: (props: { user: KindeUser; }) => void; } = {}) => {
   const { sessionManager, cookies } = await createSessionManager(request);
 
   const login = async () => {
@@ -73,9 +74,9 @@ export const handleAuth = async (request, route, options) => {
   };
 
   const health = async () => {
-    return json({
+    return Response.json({
       siteUrl: config.siteUrl,
-      issuerURL: config.issuerURL,
+      issuerURL: config.issuerUrl,
       clientID: config.clientId,
       clientSecret: validateClientSecret(config.clientSecret || "")
         ? "Set correctly"
