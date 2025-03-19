@@ -54,7 +54,7 @@ devDependencies:
     version: 3.2.0
   prettier:
     specifier: ^3.2.5
-    version: 3.2.5
+    version: 3.5.3
   release-it:
     specifier: ^17.1.1
     version: 17.1.1(typescript@5.4.4)
@@ -3977,8 +3977,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+  /prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
