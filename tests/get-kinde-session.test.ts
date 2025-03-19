@@ -389,7 +389,7 @@ describe("getKindeSession", () => {
     const session = await getKindeSession(requestEvent);
     kindeClient.refreshTokens = vi.fn().mockResolvedValueOnce({});
     const headers = await session.refreshTokens();
-    expect(kindeClient.refreshTokens).toHaveBeenCalledWith(expect.anything());
+    expect(kindeClient.getToken).toHaveBeenCalledWith(expect.anything());
     expect(headers).toStrictEqual(new Headers());
   });
 
