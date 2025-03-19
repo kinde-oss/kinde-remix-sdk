@@ -17,16 +17,16 @@ export default {
   ],
   plugins: [
     typescript({
-      tsconfig: './tsconfig.json',
+      tsconfig: "./tsconfig.json",
       outputToFilesystem: true,
       declaration: false,
       declarationDir: undefined,
       sourceMap: false,
       compilerOptions: {
-        outDir: 'dist'
-      }
+        outDir: "dist",
+      },
     }),
-    terser()
+    terser(),
   ],
   external: [
     "@kinde-oss/kinde-typescript-sdk",
@@ -36,8 +36,8 @@ export default {
   // Allow rollup to resolve .ts files and handle extensions
   onwarn: (warning, warn) => {
     // Skip certain warnings
-    if (warning.code === 'UNRESOLVED_IMPORT') return;
+    if (warning.code === "UNRESOLVED_IMPORT") return;
     // Use default for everything else
     warn(warning);
-  }
+  },
 };

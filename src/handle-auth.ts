@@ -35,7 +35,11 @@ export const kindeClient = createKindeServerClient(
  * @param {{onRedirectCallback?: (props: {user: import("./types").KindeUser}) => void}} [options]
  * @returns
  */
-export const handleAuth = async (request: Request, route: string | undefined, options: { onRedirectCallback?: (props: { user: KindeUser; }) => void; } = {}) => {
+export const handleAuth = async (
+  request: Request,
+  route: string | undefined,
+  options: { onRedirectCallback?: (props: { user: KindeUser }) => void } = {},
+) => {
   const { sessionManager, cookies } = await createSessionManager(request);
 
   const login = async () => {

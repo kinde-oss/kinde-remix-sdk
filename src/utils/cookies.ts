@@ -1,4 +1,3 @@
-// @ts-ignore
 import Cookies from "universal-cookie";
 
 const KINDE_COOKIES = [
@@ -11,13 +10,13 @@ const KINDE_COOKIES = [
 ];
 
 interface CookieOptions {
-  maxAge?: number, 
-  domain?: string, 
-  path?: string, 
-  expires?: Date, 
-  httpOnly?: boolean, 
-  secure?: boolean, 
-  sameSite?: "Strict" | "Lax" | "None" | "Secure"
+  maxAge?: number;
+  domain?: string;
+  path?: string;
+  expires?: Date;
+  httpOnly?: boolean;
+  secure?: boolean;
+  sameSite?: "Strict" | "Lax" | "None" | "Secure";
 }
 
 /**
@@ -27,7 +26,11 @@ interface CookieOptions {
  * @param {CookieOptions} options
  * @returns
  */
-function serializeCookie(name: string, value: string | object, options: CookieOptions = {}) {
+function serializeCookie(
+  name: string,
+  value: string | object,
+  options: CookieOptions = {},
+) {
   const cookieParts = [
     `${encodeURIComponent(name)}=${encodeURIComponent(typeof value === "object" ? JSON.stringify(value) : value)}`,
   ];
@@ -71,8 +74,10 @@ function serializeCookie(name: string, value: string | object, options: CookieOp
  */
 export const generateCookieHeader = (request, cookies) => {
   const cookieHeader = request.headers.get("Cookie");
-  // @ts-ignore
-  const oldCookies = cookieHeader ? new Cookies(cookieHeader, { path: "/" }) : new Cookies(null, { path: "/" });
+  // @ts-expect-error The universal-cookie types are incorrect.
+  const oldCookies = cookieHeader
+    ? new Cookies(cookieHeader, { path: "/" })
+    : new Cookies(null, { path: "/" });
   const oldCookiesKeys = Object.keys(oldCookies.getAll());
   const newCookiesKeys = Object.keys(cookies.getAll()).filter((cookie) =>
     KINDE_COOKIES.includes(cookie),
@@ -99,7 +104,7 @@ export const generateCookieHeader = (request, cookies) => {
   cookiesToBeDeleted.forEach((key) => {
     headers.append(
       "Set-Cookie",
-      serializeCookie(key, '', {
+      serializeCookie(key, "", {
         path: "/",
         maxAge: -1,
         sameSite: "Lax",

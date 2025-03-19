@@ -1,15 +1,21 @@
-// @ts-ignore
-import Cookies, {Cookie} from 'universal-cookie';
+import Cookies, { Cookie } from "universal-cookie";
 
 /**
  *
  * @param {Request} request
  * @returns {Promise<{cookies: Cookie, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
  */
-export const createSessionManager = async (request: Request): Promise<{ cookies: Cookie; sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager; }> => {
+export const createSessionManager = async (
+  request: Request,
+): Promise<{
+  cookies: Cookie;
+  sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager;
+}> => {
   const cookieHeader = request.headers.get("Cookie");
-  // @ts-ignore
-  const cookies = cookieHeader ? new Cookies(cookieHeader, { path: "/" }) : new Cookies(null, { path: "/" });
+  // @ts-expect-error The universal-cookie types are incorrect.
+  const cookies = cookieHeader
+    ? new Cookies(cookieHeader, { path: "/" })
+    : new Cookies(null, { path: "/" });
 
   /** @type {import("@kinde-oss/kinde-typescript-sdk").SessionManager} */
   const sessionManager = {
