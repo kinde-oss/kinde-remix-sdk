@@ -74,7 +74,6 @@ function serializeCookie(
  */
 export const generateCookieHeader = (request, cookies) => {
   const cookieHeader = request.headers.get("Cookie");
-  // @ts-expect-error The universal-cookie types are incorrect.
   const oldCookies = cookieHeader
     ? new Cookies(cookieHeader, { path: "/" })
     : new Cookies(null, { path: "/" });

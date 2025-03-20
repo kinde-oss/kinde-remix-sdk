@@ -12,7 +12,6 @@ export const createSessionManager = async (
   sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager;
 }> => {
   const cookieHeader = request.headers.get("Cookie");
-  // @ts-expect-error The universal-cookie types are incorrect.
   const cookies = cookieHeader
     ? new Cookies(cookieHeader, { path: "/" })
     : new Cookies(null, { path: "/" });
