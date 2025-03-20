@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@kinde-oss/kinde-typescript-sdk':
     specifier: ^2.8.0
-    version: 2.8.0
+    version: 2.9.1
   '@remix-run/node':
     specifier: ^2.4.1
     version: 2.8.1(typescript@5.4.4)
@@ -465,10 +465,10 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@kinde-oss/kinde-typescript-sdk@2.8.0:
-    resolution: {integrity: sha512-LafkGPLVVfunIgnXwmiDDubeOsp+ypcT3mI17ffepaXoBAyjtfxX/bb96f3ThR1VZ4Gsy3LeladduYnyhxPFRg==}
+  /@kinde-oss/kinde-typescript-sdk@2.9.1:
+    resolution: {integrity: sha512-3BBFQ3/WgAgoWigfpK9ItUkpyleuHN14in+V44NLWi+zHwE1B8II/HR5CHhw+s6qR1wyJwQh4ddz2tUJwEXysg==}
     dependencies:
-      jwt-decode: 4.0.0
+      jose: 5.10.0
       uncrypto: 0.1.3
     dev: false
 
@@ -3298,6 +3298,10 @@ packages:
       filelist: 1.0.4
       minimatch: 3.1.2
     dev: true
+
+  /jose@5.10.0:
+    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
