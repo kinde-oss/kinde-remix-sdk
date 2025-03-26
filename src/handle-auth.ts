@@ -3,7 +3,7 @@ import {
   createKindeServerClient,
   validateClientSecret,
 } from "@kinde-oss/kinde-typescript-sdk";
-import { redirect } from "@remix-run/node";
+import { redirect } from "react-router";
 import { config } from "./config";
 import { createSessionManager } from "./session/session";
 import { generateCookieHeader } from "./utils/cookies";

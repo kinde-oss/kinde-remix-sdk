@@ -10,12 +10,12 @@ importers:
       "@kinde-oss/kinde-typescript-sdk":
         specifier: ^2.8.0
         version: 2.9.1
-      "@remix-run/node":
-        specifier: ^2.4.1
-        version: 2.16.2(typescript@5.8.2)
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
+      react-router:
+        specifier: ^7.4.0
+        version: 7.4.0(react@19.0.0)
       universal-cookie:
         specifier: ^8.0.1
         version: 8.0.1
@@ -583,68 +583,6 @@ packages:
       }
     engines: { node: ">=12" }
 
-  "@remix-run/node@2.16.2":
-    resolution:
-      {
-        integrity: sha512-Q+DdX9YU1eCqwtWxJG2rIk2sYVZokCzb/T3ZsnhkWkSc0/NTMcrtkQY6JRymcMEoR+oVnJaJ9xPHt1P/BV4k9Q==,
-      }
-    engines: { node: ">=18.0.0" }
-    peerDependencies:
-      typescript: ^5.1.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  "@remix-run/router@1.23.0":
-    resolution:
-      {
-        integrity: sha512-O3rHJzAQKamUz1fvE0Qaw0xSFqsA/yafi2iqeE0pvdFtCO1viYx8QL6f3Ln/aCCTLxs68SLf0KPM9eSeM8yBnA==,
-      }
-    engines: { node: ">=14.0.0" }
-
-  "@remix-run/server-runtime@2.16.2":
-    resolution:
-      {
-        integrity: sha512-tleEyGfFcczyUzBumDXRV4ns8ghqoCXgiNUrTWmvtI+8Vaw9bIB9Y4/m852YNLz1Kum1d936SobATzijhnEPsA==,
-      }
-    engines: { node: ">=18.0.0" }
-    peerDependencies:
-      typescript: ^5.1.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  "@remix-run/web-blob@3.1.0":
-    resolution:
-      {
-        integrity: sha512-owGzFLbqPH9PlKb8KvpNJ0NO74HWE2euAn61eEiyCXX/oteoVzTVSN8mpLgDjaxBf2btj5/nUllSUgpyd6IH6g==,
-      }
-
-  "@remix-run/web-fetch@4.4.2":
-    resolution:
-      {
-        integrity: sha512-jgKfzA713/4kAW/oZ4bC3MoLWyjModOVDjFPNseVqcJKSafgIscrYL9G50SurEYLswPuoU3HzSbO0jQCMYWHhA==,
-      }
-    engines: { node: ^10.17 || >=12.3 }
-
-  "@remix-run/web-file@3.1.0":
-    resolution:
-      {
-        integrity: sha512-dW2MNGwoiEYhlspOAXFBasmLeYshyAyhIdrlXBi06Duex5tDr3ut2LFKVj7tyHLmn8nnNwFf1BjNbkQpygC2aQ==,
-      }
-
-  "@remix-run/web-form-data@3.1.0":
-    resolution:
-      {
-        integrity: sha512-NdeohLMdrb+pHxMQ/Geuzdp0eqPbea+Ieo8M8Jx2lGC6TBHsgHzYcBvr0LyPdPVycNRDEpWpiDdCOdCryo3f9A==,
-      }
-
-  "@remix-run/web-stream@1.1.0":
-    resolution:
-      {
-        integrity: sha512-KRJtwrjRV5Bb+pM7zxcTJkhIqWWSy+MYsIxHK+0m5atcznsf15YwUBWHWulZerV2+vvHH1Lp1DD7pw6qKW8SgA==,
-      }
-
   "@rollup/plugin-terser@0.4.4":
     resolution:
       {
@@ -1057,25 +995,6 @@ packages:
       {
         integrity: sha512-jOrrUvXM4Av9ZWiG1EajNto0u96kWAhJ1LmPmJhXXQx/32MecEKd10pOLYgS2BQx1TgkGhloPU1ArDW2vvaY6g==,
       }
-
-  "@web3-storage/multipart-parser@1.0.0":
-    resolution:
-      {
-        integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==,
-      }
-
-  "@zxing/text-encoding@0.9.0":
-    resolution:
-      {
-        integrity: sha512-U/4aVJ2mxI0aDNI8Uq0wEhMgY+u4CNtEb0om3+y3+niDAsoTCOB33UF0sxpzqzdqXLqmvc+vZyAt4O8pPdfkwA==,
-      }
-
-  abort-controller@3.0.0:
-    resolution:
-      {
-        integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==,
-      }
-    engines: { node: ">=6.5" }
 
   acorn-jsx@5.3.2:
     resolution:
@@ -1525,20 +1444,6 @@ packages:
       }
     engines: { node: ">=18" }
 
-  cookie-signature@1.2.2:
-    resolution:
-      {
-        integrity: sha512-D76uU73ulSXrD1UXF4KE2TMxVVwhsnCgfAyTg9k8P6KGZjlXKrOLe4dJQKI3Bxi5wjesZoFXJWElNWBjPZMbhg==,
-      }
-    engines: { node: ">=6.6.0" }
-
-  cookie@0.6.0:
-    resolution:
-      {
-        integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==,
-      }
-    engines: { node: ">= 0.6" }
-
   cookie@1.0.2:
     resolution:
       {
@@ -1564,13 +1469,6 @@ packages:
         integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==,
       }
     engines: { node: ">= 8" }
-
-  data-uri-to-buffer@3.0.1:
-    resolution:
-      {
-        integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==,
-      }
-    engines: { node: ">= 6" }
 
   data-uri-to-buffer@6.0.2:
     resolution:
@@ -2033,13 +1931,6 @@ packages:
         integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==,
       }
     engines: { node: ">=0.10.0" }
-
-  event-target-shim@5.0.1:
-    resolution:
-      {
-        integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==,
-      }
-    engines: { node: ">=6" }
 
   execa@5.1.1:
     resolution:
@@ -2517,13 +2408,6 @@ packages:
         integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==,
       }
     engines: { node: ">= 12" }
-
-  is-arguments@1.2.0:
-    resolution:
-      {
-        integrity: sha512-7bVbi0huj/wrIAOzb8U1aszg9kdi3KN/CyU19CTI7tAoZYEZoL9yCDXpbXN+uPsuWnP02cyug1gleqq+TU+YCA==,
-      }
-    engines: { node: ">= 0.4" }
 
   is-array-buffer@3.0.5:
     resolution:
@@ -3194,13 +3078,6 @@ packages:
         integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==,
       }
 
-  mrmime@1.0.1:
-    resolution:
-      {
-        integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==,
-      }
-    engines: { node: ">=10" }
-
   ms@2.1.3:
     resolution:
       {
@@ -3647,6 +3524,26 @@ packages:
         integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==,
       }
 
+  react-router@7.4.0:
+    resolution:
+      {
+        integrity: sha512-Y2g5ObjkvX3VFeVt+0CIPuYd9PpgqCslG7ASSIdN73LwA1nNWzcMLaoMRJfP3prZFI92svxFwbn7XkLJ+UPQ6A==,
+      }
+    engines: { node: ">=20.0.0" }
+    peerDependencies:
+      react: ">=18"
+      react-dom: ">=18"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+
+  react@19.0.0:
+    resolution:
+      {
+        integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==,
+      }
+    engines: { node: ">=0.10.0" }
+
   readable-stream@3.6.2:
     resolution:
       {
@@ -4007,13 +3904,6 @@ packages:
       }
     engines: { node: ">=0.10.0" }
 
-  source-map@0.7.4:
-    resolution:
-      {
-        integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==,
-      }
-    engines: { node: ">= 8" }
-
   sprintf-js@1.1.3:
     resolution:
       {
@@ -4038,12 +3928,6 @@ packages:
         integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==,
       }
     engines: { node: ">=18" }
-
-  stream-slice@0.1.2:
-    resolution:
-      {
-        integrity: sha512-QzQxpoacatkreL6jsxnVb7X5R/pGw9OUv2qWTYWnmLpg4NdN31snPy/f3TdQE1ZUXaThRvj1Zw4/OGg0ZkaLMA==,
-      }
 
   string-width@4.2.3:
     resolution:
@@ -4346,13 +4230,6 @@ packages:
         integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==,
       }
 
-  undici@6.21.2:
-    resolution:
-      {
-        integrity: sha512-uROZWze0R0itiAKVPsYhFov9LxrPMHLMEQFszeI2gCN6bnIIZ8twzBCJcN2LJrBBLfrP0t1FW0g+JmKVl8Vk1g==,
-      }
-    engines: { node: ">=18.17" }
-
   unicorn-magic@0.1.0:
     resolution:
       {
@@ -4396,12 +4273,6 @@ packages:
     resolution:
       {
         integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==,
-      }
-
-  util@0.12.5:
-    resolution:
-      {
-        integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==,
       }
 
   vite-node@1.6.1:
@@ -4479,19 +4350,6 @@ packages:
       {
         integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==,
       }
-
-  web-encoding@1.1.5:
-    resolution:
-      {
-        integrity: sha512-HYLeVCdJ0+lBYV2FvNZmv3HJ2Nt0QYXqZojk3d9FJOLkwnuhzM9tmamh8d7HPM8QqjKH8DeHkFTx+CFlWpZZDA==,
-      }
-
-  web-streams-polyfill@3.3.3:
-    resolution:
-      {
-        integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==,
-      }
-    engines: { node: ">= 8" }
 
   when-exit@2.1.4:
     resolution:
@@ -4880,60 +4738,6 @@ snapshots:
       "@pnpm/network.ca-file": 1.0.2
       config-chain: 1.1.13
 
-  "@remix-run/node@2.16.2(typescript@5.8.2)":
-    dependencies:
-      "@remix-run/server-runtime": 2.16.2(typescript@5.8.2)
-      "@remix-run/web-fetch": 4.4.2
-      "@web3-storage/multipart-parser": 1.0.0
-      cookie-signature: 1.2.2
-      source-map-support: 0.5.21
-      stream-slice: 0.1.2
-      undici: 6.21.2
-    optionalDependencies:
-      typescript: 5.8.2
-
-  "@remix-run/router@1.23.0": {}
-
-  "@remix-run/server-runtime@2.16.2(typescript@5.8.2)":
-    dependencies:
-      "@remix-run/router": 1.23.0
-      "@types/cookie": 0.6.0
-      "@web3-storage/multipart-parser": 1.0.0
-      cookie: 0.6.0
-      set-cookie-parser: 2.7.1
-      source-map: 0.7.4
-      turbo-stream: 2.4.0
-    optionalDependencies:
-      typescript: 5.8.2
-
-  "@remix-run/web-blob@3.1.0":
-    dependencies:
-      "@remix-run/web-stream": 1.1.0
-      web-encoding: 1.1.5
-
-  "@remix-run/web-fetch@4.4.2":
-    dependencies:
-      "@remix-run/web-blob": 3.1.0
-      "@remix-run/web-file": 3.1.0
-      "@remix-run/web-form-data": 3.1.0
-      "@remix-run/web-stream": 1.1.0
-      "@web3-storage/multipart-parser": 1.0.0
-      abort-controller: 3.0.0
-      data-uri-to-buffer: 3.0.1
-      mrmime: 1.0.1
-
-  "@remix-run/web-file@3.1.0":
-    dependencies:
-      "@remix-run/web-blob": 3.1.0
-
-  "@remix-run/web-form-data@3.1.0":
-    dependencies:
-      web-encoding: 1.1.5
-
-  "@remix-run/web-stream@1.1.0":
-    dependencies:
-      web-streams-polyfill: 3.3.3
-
   "@rollup/plugin-terser@0.4.4(rollup@4.36.0)":
     dependencies:
       serialize-javascript: 6.0.2
@@ -5205,15 +5009,6 @@ snapshots:
       loupe: 2.3.7
       pretty-format: 29.7.0
 
-  "@web3-storage/multipart-parser@1.0.0": {}
-
-  "@zxing/text-encoding@0.9.0":
-    optional: true
-
-  abort-controller@3.0.0:
-    dependencies:
-      event-target-shim: 5.0.1
-
   acorn-jsx@5.3.2(acorn@8.14.1):
     dependencies:
       acorn: 8.14.1
@@ -5473,10 +5268,6 @@ snapshots:
       graceful-fs: 4.2.11
       xdg-basedir: 5.1.0
 
-  cookie-signature@1.2.2: {}
-
-  cookie@0.6.0: {}
-
   cookie@1.0.2: {}
 
   cosmiconfig@9.0.0(typescript@5.8.2):
@@ -5493,8 +5284,6 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  data-uri-to-buffer@3.0.1: {}
 
   data-uri-to-buffer@6.0.2: {}
 
@@ -5894,8 +5683,6 @@ snapshots:
 
   esutils@2.0.3: {}
 
-  event-target-shim@5.0.1: {}
-
   execa@5.1.1:
     dependencies:
       cross-spawn: 7.0.6
@@ -6217,11 +6004,6 @@ snapshots:
     dependencies:
       jsbn: 1.1.0
       sprintf-js: 1.1.3
-
-  is-arguments@1.2.0:
-    dependencies:
-      call-bound: 1.0.4
-      has-tostringtag: 1.0.2
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -6563,8 +6345,6 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.5.4
 
-  mrmime@1.0.1: {}
-
   ms@2.1.3: {}
 
   mute-stream@1.0.0: {}
@@ -6841,6 +6621,16 @@ snapshots:
 
   react-is@18.3.1: {}
 
+  react-router@7.4.0(react@19.0.0):
+    dependencies:
+      "@types/cookie": 0.6.0
+      cookie: 1.0.2
+      react: 19.0.0
+      set-cookie-parser: 2.7.1
+      turbo-stream: 2.4.0
+
+  react@19.0.0: {}
+
   readable-stream@3.6.2:
     dependencies:
       inherits: 2.0.4
@@ -7107,8 +6897,6 @@ snapshots:
 
   source-map@0.6.1: {}
 
-  source-map@0.7.4: {}
-
   sprintf-js@1.1.3: {}
 
   stackback@0.0.2: {}
@@ -7116,8 +6904,6 @@ snapshots:
   std-env@3.8.1: {}
 
   stdin-discarder@0.2.2: {}
-
-  stream-slice@0.1.2: {}
 
   string-width@4.2.3:
     dependencies:
@@ -7294,8 +7080,6 @@ snapshots:
 
   undici-types@6.19.8: {}
 
-  undici@6.21.2: {}
-
   unicorn-magic@0.1.0: {}
 
   universal-cookie@8.0.1:
@@ -7324,14 +7108,6 @@ snapshots:
   url-join@5.0.0: {}
 
   util-deprecate@1.0.2: {}
-
-  util@0.12.5:
-    dependencies:
-      inherits: 2.0.4
-      is-arguments: 1.2.0
-      is-generator-function: 1.1.0
-      is-typed-array: 1.1.15
-      which-typed-array: 1.1.19
 
   vite-node@1.6.1(@types/node@20.17.24)(terser@5.39.0):
     dependencies:
@@ -7398,14 +7174,6 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
-
-  web-encoding@1.1.5:
-    dependencies:
-      util: 0.12.5
-    optionalDependencies:
-      "@zxing/text-encoding": 0.9.0
-
-  web-streams-polyfill@3.3.3: {}
 
   when-exit@2.1.4: {}
 

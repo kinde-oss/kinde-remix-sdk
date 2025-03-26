@@ -30,7 +30,7 @@ export default {
   ],
   external: [
     "@kinde-oss/kinde-typescript-sdk",
-    "@remix-run/node",
+    "react-router",
     "universal-cookie",
   ],
   // Allow rollup to resolve .ts files and handle extensions

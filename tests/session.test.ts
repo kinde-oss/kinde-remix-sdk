@@ -1,8 +1,5 @@
-import { installGlobals } from "@remix-run/node";
 import { describe, expect, test } from "vitest";
 import { createSessionManager } from "../src/session";
-
-installGlobals();
 
 describe("Session tests", () => {
   test("getSessionItem", async () => {
