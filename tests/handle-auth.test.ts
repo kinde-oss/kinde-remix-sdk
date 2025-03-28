@@ -1,8 +1,5 @@
-import { installGlobals } from "@remix-run/node";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { handleAuth, kindeClient } from "../src/handle-auth";
-
-installGlobals();
+import { handleAuth, kindeClient } from "../src/handle-auth.ts";
 
 vi.stubEnv("SESSION_SECRET", "secret");
 

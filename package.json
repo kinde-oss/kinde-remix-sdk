@@ -25,7 +25,7 @@
     }
   },
   "scripts": {
-    "build": "npx tsc && cp src/types.d.ts dist/types/types.d.ts && genversion --es6 src/utils/version.js && npx rollup --c",
+    "build": "npx tsc && mkdir -p dist/types && cp src/types.d.ts dist/types/types.d.ts && genversion --es6 src/utils/version.js && npx rollup --c",
     "release": "release-it",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
@@ -48,10 +48,11 @@
   "dependencies": {
     "@kinde-oss/kinde-typescript-sdk": "^2.8.0",
     "jwt-decode": "^4.0.0",
-    "universal-cookie": "^7.1.4"
+    "universal-cookie": "^8.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^20.10.7",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
@@ -69,6 +70,7 @@
     "vitest": "^1.4.0"
   },
   "peerDependencies": {
-    "@remix-run/node": "^2.4.1"
-  }
+    "react-router": "^7.4.0"
+  },
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
 }
