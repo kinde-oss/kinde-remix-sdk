@@ -14,7 +14,12 @@ const compat = new FlatCompat({
 });
 
 module.exports = defineConfig([
+  ...compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+  ),
   {
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -25,28 +30,18 @@ module.exports = defineConfig([
       sourceType: "module",
       parserOptions: {},
     },
-
-    extends: compat.extends(
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-    ),
-
     plugins: {
       "@typescript-eslint": typescriptEslint,
     },
-
     rules: {},
   },
   {
+    files: ["**/.eslintrc.{js,cjs}"],
     languageOptions: {
       globals: {
         ...globals.node,
       },
-
       sourceType: "script",
-      parserOptions: {},
     },
-
-    files: ["**/.eslintrc.{js,cjs}"],
   },
 ]);
