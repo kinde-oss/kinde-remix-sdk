@@ -1,15 +1,9 @@
 import Cookies from "universal-cookie";
-import { isKindeCookieName } from "./kinde-cookie-keys";
-
-interface CookieOptions {
-  maxAge?: number;
-  domain?: string;
-  path?: string;
-  expires?: Date;
-  httpOnly?: boolean;
-  secure?: boolean;
-  sameSite?: "Strict" | "Lax" | "None" | "Secure";
-}
+import {
+  KindeCookieOptions,
+  getStandardCookieOptions,
+  isKindeCookieName,
+} from "./kinde-cookie-keys";
 
 /**
  *
@@ -21,7 +15,7 @@ interface CookieOptions {
 function serializeCookie(
   name: string,
   value: string | object,
-  options: CookieOptions = {},
+  options: KindeCookieOptions = {},
 ) {
   const cookieParts = [
     `${encodeURIComponent(name)}=${encodeURIComponent(typeof value === "object" ? JSON.stringify(value) : value)}`,
@@ -81,16 +75,12 @@ export const generateCookieHeader = (request, cookies) => {
   );
 
   const headers = new Headers();
+  const standardCookieOptions = getStandardCookieOptions();
 
   newCookiesKeys.forEach((key) => {
     headers.append(
       "Set-Cookie",
-      serializeCookie(key, cookies.get(key), {
-        path: "/",
-        sameSite: "Lax",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      }),
+      serializeCookie(key, cookies.get(key), standardCookieOptions),
     );
   });
 
@@ -98,11 +88,8 @@ export const generateCookieHeader = (request, cookies) => {
     headers.append(
       "Set-Cookie",
       serializeCookie(key, "", {
-        path: "/",
+        ...standardCookieOptions,
         maxAge: -1,
-        sameSite: "Lax",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
       }),
     );
   });

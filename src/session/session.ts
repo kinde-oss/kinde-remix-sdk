@@ -1,24 +1,24 @@
 import { splitString } from "@kinde/js-utils";
 import Cookies, { Cookie } from "universal-cookie";
-import { KINDE_COOKIES } from "../utils/kinde-cookie-keys";
-
-const MAX_COOKIE_LENGTH = 3000;
-const CHUNK_SUFFIX_PATTERN = /^\d+$/;
+import {
+  KINDE_COOKIES,
+  MAX_COOKIE_LENGTH,
+  getCookieRemovalOptions,
+  getKindeCookieBaseName,
+  getStandardCookieOptions,
+} from "../utils/kinde-cookie-keys";
 
 const buildChunkName = (key: string, index: number) =>
   `${key}${index === 0 ? "" : index}`;
 
-const isChunkForKey = (candidate: string, baseKey: string) => {
-  if (candidate === baseKey) return true;
-  if (!candidate.startsWith(baseKey)) return false;
-  const suffix = candidate.slice(baseKey.length);
-  return suffix.length > 0 && CHUNK_SUFFIX_PATTERN.test(suffix);
-};
-
 const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
   Object.keys(cookies.getAll())
-    .filter((cookieName) => isChunkForKey(cookieName, baseKey))
-    .forEach((cookieName) => cookies.remove(cookieName, { path: "/" }));
+    .filter(
+      (cookieName) => getKindeCookieBaseName(cookieName, baseKey) === baseKey,
+    )
+    .forEach((cookieName) =>
+      cookies.remove(cookieName, getCookieRemovalOptions()),
+    );
 };
 
 const readChunkSegments = (cookies: Cookie, baseKey: string) => {
@@ -100,12 +100,16 @@ export const createSessionManager = async (
       ) {
         const chunks = splitString(serializedValue, MAX_COOKIE_LENGTH);
         chunks.forEach((chunk, index) => {
-          cookies.set(buildChunkName(key, index), chunk, { path: "/" });
+          cookies.set(
+            buildChunkName(key, index),
+            chunk,
+            getStandardCookieOptions(),
+          );
         });
         return;
       }
 
-      cookies.set(key, value, { path: "/" });
+      cookies.set(key, value, getStandardCookieOptions());
     },
 
     /**
