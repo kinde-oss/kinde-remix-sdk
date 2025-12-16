@@ -1,4 +1,40 @@
+import { splitString } from "@kinde/js-utils";
 import Cookies, { Cookie } from "universal-cookie";
+import { KINDE_COOKIES } from "../utils/kinde-cookie-keys";
+
+const MAX_COOKIE_LENGTH = 3000;
+const CHUNK_SUFFIX_PATTERN = /^\d+$/;
+
+const buildChunkName = (key: string, index: number) =>
+  `${key}${index === 0 ? "" : index}`;
+
+const isChunkForKey = (candidate: string, baseKey: string) => {
+  if (candidate === baseKey) return true;
+  if (!candidate.startsWith(baseKey)) return false;
+  const suffix = candidate.slice(baseKey.length);
+  return suffix.length > 0 && CHUNK_SUFFIX_PATTERN.test(suffix);
+};
+
+const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
+  Object.keys(cookies.getAll())
+    .filter((cookieName) => isChunkForKey(cookieName, baseKey))
+    .forEach((cookieName) => cookies.remove(cookieName, { path: "/" }));
+};
+
+const readChunkSegments = (cookies: Cookie, baseKey: string) => {
+  const segments: unknown[] = [];
+  let index = 0;
+  while (true) {
+    const chunkName = buildChunkName(baseKey, index);
+    const value = cookies.get(chunkName);
+    if (value === undefined) {
+      break;
+    }
+    segments.push(value);
+    index += 1;
+  }
+  return segments;
+};
 
 /**
  *
@@ -6,7 +42,7 @@ import Cookies, { Cookie } from "universal-cookie";
  * @returns {Promise<{cookies: Cookie, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
  */
 export const createSessionManager = async (
-  request: Request,
+  request: Request
 ): Promise<{
   cookies: Cookie;
   sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager;
@@ -24,7 +60,22 @@ export const createSessionManager = async (
      * @returns {Promise<any>} The session item.
      */
     async getSessionItem(key) {
-      return cookies.get(key);
+      const segments = readChunkSegments(cookies, key);
+      if (segments.length === 0) return undefined;
+      if (segments.length === 1) return segments[0];
+
+      const serializedValue = (segments as string[]).join("");
+
+      try {
+        const parsed = JSON.parse(serializedValue);
+        if (typeof parsed === "object") {
+          return parsed;
+        }
+      } catch (error) {
+        // no-op: value was a plain string
+      }
+
+      return serializedValue;
     },
 
     /**
@@ -34,6 +85,26 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async setSessionItem(key, value) {
+      removeCookieChunks(cookies, key);
+
+      if (value === undefined) {
+        return;
+      }
+
+      const serializedValue =
+        typeof value === "string" ? value : JSON.stringify(value);
+
+      if (
+        typeof serializedValue === "string" &&
+        serializedValue.length > MAX_COOKIE_LENGTH
+      ) {
+        const chunks = splitString(serializedValue, MAX_COOKIE_LENGTH);
+        chunks.forEach((chunk, index) => {
+          cookies.set(buildChunkName(key, index), chunk, { path: "/" });
+        });
+        return;
+      }
+
       cookies.set(key, value, { path: "/" });
     },
 
@@ -43,7 +114,7 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async removeSessionItem(key) {
-      cookies.remove(key, { path: "/" });
+      removeCookieChunks(cookies, key);
     },
 
     /**
@@ -51,15 +122,7 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async destroySession() {
-      [
-        "id_token_payload",
-        "id_token",
-        "access_token_payload",
-        "access_token",
-        "user",
-        "refresh_token",
-        "post_login_redirect_url",
-      ].forEach((key) => cookies.remove(key, { path: "/" }));
+      KINDE_COOKIES.forEach((key) => removeCookieChunks(cookies, key));
 
       return Promise.resolve();
     },

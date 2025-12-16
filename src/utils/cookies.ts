@@ -1,13 +1,5 @@
 import Cookies from "universal-cookie";
-
-const KINDE_COOKIES = [
-  "refresh_token",
-  "access_token",
-  "id_token",
-  "user",
-  "ac-state-key",
-  "post_login_redirect_url",
-];
+import { isKindeCookieName } from "./kinde-cookie-keys";
 
 interface CookieOptions {
   maxAge?: number;
@@ -77,14 +69,16 @@ export const generateCookieHeader = (request, cookies) => {
   const oldCookies = cookieHeader
     ? new Cookies(cookieHeader, { path: "/" })
     : new Cookies(null, { path: "/" });
-  const oldCookiesKeys = Object.keys(oldCookies.getAll());
-  const newCookiesKeys = Object.keys(cookies.getAll()).filter((cookie) =>
-    KINDE_COOKIES.includes(cookie),
+  const oldCookiesKeys = Object.keys(oldCookies.getAll()).filter(
+    isKindeCookieName
+  );
+  const newCookiesKeys = Object.keys(cookies.getAll()).filter(
+    isKindeCookieName
   );
 
-  const cookiesToBeDeleted = oldCookiesKeys
-    .filter((cookie) => KINDE_COOKIES.includes(cookie))
-    .filter((x) => !newCookiesKeys.includes(x));
+  const cookiesToBeDeleted = oldCookiesKeys.filter(
+    (x) => !newCookiesKeys.includes(x)
+  );
 
   const headers = new Headers();
 

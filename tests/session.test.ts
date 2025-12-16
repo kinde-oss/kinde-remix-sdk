@@ -6,9 +6,11 @@ describe("Session tests", () => {
     const mockRequest = new Request("http://kinde.com");
     const { sessionManager } = await createSessionManager(mockRequest);
 
-    sessionManager.setSessionItem("someKey", "someValue");
+    await sessionManager.setSessionItem("someKey", "someValue");
 
-    expect(await sessionManager.getSessionItem("someKey")).toEqual("someValue");
+    expect(await sessionManager.getSessionItem("someKey")).toEqual(
+      "someValue",
+    );
   });
 
   test("setSessionItem", async () => {
@@ -56,5 +58,50 @@ describe("Session tests", () => {
     expect(
       await sessionManager.getSessionItem("access_token"),
     ).not.toBeDefined();
+  });
+
+  test("setSessionItem splits large values", async () => {
+    const mockRequest = new Request("http://kinde.com");
+    const { sessionManager, cookies } = await createSessionManager(
+      mockRequest,
+    );
+
+    const largeValue = "x".repeat(4000);
+    await sessionManager.setSessionItem("access_token", largeValue);
+
+    expect(await sessionManager.getSessionItem("access_token")).toEqual(
+      largeValue,
+    );
+    expect(Object.keys(cookies.getAll())).toEqual(
+      expect.arrayContaining(["access_token", "access_token1"]),
+    );
+  });
+
+  test("removeSessionItem clears chunked cookies", async () => {
+    const mockRequest = new Request("http://kinde.com");
+    const { sessionManager, cookies } = await createSessionManager(
+      mockRequest,
+    );
+
+    const largeValue = "x".repeat(4000);
+    await sessionManager.setSessionItem("refresh_token", largeValue);
+    await sessionManager.removeSessionItem("refresh_token");
+
+    expect(cookies.get("refresh_token")).toBeUndefined();
+    expect(cookies.get("refresh_token1")).toBeUndefined();
+  });
+
+  test("destroySession clears chunked cookies", async () => {
+    const mockRequest = new Request("http://kinde.com");
+    const { sessionManager, cookies } = await createSessionManager(
+      mockRequest,
+    );
+
+    const largeValue = "x".repeat(4000);
+    await sessionManager.setSessionItem("id_token", largeValue);
+    await sessionManager.destroySession();
+
+    expect(cookies.get("id_token")).toBeUndefined();
+    expect(cookies.get("id_token1")).toBeUndefined();
   });
 });

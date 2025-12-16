@@ -19,7 +19,7 @@ describe("Utils tests", () => {
     const mockRequest = new Request("http://kinde.com");
     const { cookies, sessionManager } = await createSessionManager(mockRequest);
     sessionManager.setSessionItem("access_token", "someValue");
-    sessionManager.removeSessionItem("access_token");
+    await sessionManager.removeSessionItem("access_token");
     const res = generateCookieHeader(mockRequest, cookies);
     expect(res).toBeTypeOf("object");
     const setCookie = res.getSetCookie();
@@ -36,6 +36,24 @@ describe("Utils tests", () => {
     const setCookie = res.getSetCookie();
     expect(setCookie).toContain(
       "access_token=; Max-Age=-1; Path=/; HttpOnly; SameSite=Lax",
+    );
+  });
+
+  test("generateCookieHeader includes chunked cookies", async () => {
+    const mockRequest = new Request("http://kinde.com");
+    const { cookies, sessionManager } = await createSessionManager(mockRequest);
+    const largeValue = "y".repeat(4000);
+    await sessionManager.setSessionItem("access_token", largeValue);
+
+    const res = generateCookieHeader(mockRequest, cookies);
+    const setCookie = res.getSetCookie();
+
+    expect(setCookie.length).toBeGreaterThan(1);
+    expect(setCookie).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("access_token="),
+        expect.stringContaining("access_token1="),
+      ]),
     );
   });
 });
