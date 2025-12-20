@@ -64,14 +64,14 @@ export const generateCookieHeader = (request, cookies) => {
     ? new Cookies(cookieHeader, { path: "/" })
     : new Cookies(null, { path: "/" });
   const oldCookiesKeys = Object.keys(oldCookies.getAll()).filter(
-    isKindeCookieName
+    isKindeCookieName,
   );
   const newCookiesKeys = Object.keys(cookies.getAll()).filter(
-    isKindeCookieName
+    isKindeCookieName,
   );
 
   const cookiesToBeDeleted = oldCookiesKeys.filter(
-    (x) => !newCookiesKeys.includes(x)
+    (x) => !newCookiesKeys.includes(x),
   );
 
   const headers = new Headers();

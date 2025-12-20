@@ -23,15 +23,13 @@ const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
 
 const readChunkSegments = (cookies: Cookie, baseKey: string) => {
   const segments: unknown[] = [];
-  let index = 0;
-  while (true) {
+  for (let index = 0; ; index++) {
     const chunkName = buildChunkName(baseKey, index);
     const value = cookies.get(chunkName);
     if (value === undefined) {
       break;
     }
     segments.push(value);
-    index += 1;
   }
   return segments;
 };
@@ -42,7 +40,7 @@ const readChunkSegments = (cookies: Cookie, baseKey: string) => {
  * @returns {Promise<{cookies: Cookie, sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager}>}
  */
 export const createSessionManager = async (
-  request: Request
+  request: Request,
 ): Promise<{
   cookies: Cookie;
   sessionManager: import("@kinde-oss/kinde-typescript-sdk").SessionManager;

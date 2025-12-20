@@ -11,7 +11,7 @@ describe("Utils tests", () => {
     expect(res).toBeTypeOf("object");
     const setCookie = res.getSetCookie();
     expect(setCookie).toEqual([
-      "access_token=someValue; Max-Age=3600; Path=/; HttpOnly; SameSite=Lax",
+      "access_token=someValue; Max-Age=3600; Path=/; HttpOnly; SameSite=lax",
     ]);
   });
 
@@ -35,7 +35,7 @@ describe("Utils tests", () => {
     expect(res).toBeTypeOf("object");
     const setCookie = res.getSetCookie();
     expect(setCookie).toContain(
-      "access_token=; Max-Age=-1; Path=/; HttpOnly; SameSite=Lax",
+      "access_token=; Max-Age=-1; Path=/; HttpOnly; SameSite=lax",
     );
   });
 

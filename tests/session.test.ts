@@ -8,9 +8,7 @@ describe("Session tests", () => {
 
     await sessionManager.setSessionItem("someKey", "someValue");
 
-    expect(await sessionManager.getSessionItem("someKey")).toEqual(
-      "someValue",
-    );
+    expect(await sessionManager.getSessionItem("someKey")).toEqual("someValue");
   });
 
   test("setSessionItem", async () => {
@@ -62,9 +60,7 @@ describe("Session tests", () => {
 
   test("setSessionItem splits large values", async () => {
     const mockRequest = new Request("http://kinde.com");
-    const { sessionManager, cookies } = await createSessionManager(
-      mockRequest,
-    );
+    const { sessionManager, cookies } = await createSessionManager(mockRequest);
 
     const largeValue = "x".repeat(4000);
     await sessionManager.setSessionItem("access_token", largeValue);
@@ -79,9 +75,7 @@ describe("Session tests", () => {
 
   test("removeSessionItem clears chunked cookies", async () => {
     const mockRequest = new Request("http://kinde.com");
-    const { sessionManager, cookies } = await createSessionManager(
-      mockRequest,
-    );
+    const { sessionManager, cookies } = await createSessionManager(mockRequest);
 
     const largeValue = "x".repeat(4000);
     await sessionManager.setSessionItem("refresh_token", largeValue);
@@ -93,9 +87,7 @@ describe("Session tests", () => {
 
   test("destroySession clears chunked cookies", async () => {
     const mockRequest = new Request("http://kinde.com");
-    const { sessionManager, cookies } = await createSessionManager(
-      mockRequest,
-    );
+    const { sessionManager, cookies } = await createSessionManager(mockRequest);
 
     const largeValue = "x".repeat(4000);
     await sessionManager.setSessionItem("id_token", largeValue);

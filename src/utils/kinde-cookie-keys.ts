@@ -19,12 +19,12 @@ export type KindeCookieOptions = {
   expires?: Date;
   httpOnly?: boolean;
   secure?: boolean;
-  sameSite?: "Strict" | "Lax" | "None" | "Secure";
+  sameSite?: "strict" | "lax" | "none";
 };
 
 const BASE_COOKIE_OPTIONS: Omit<KindeCookieOptions, "maxAge" | "expires"> = {
   path: "/",
-  sameSite: "Lax",
+  sameSite: "lax",
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
 };
@@ -82,6 +82,7 @@ export const getKindeCookieBaseName = (
 export const isKindeCookieName = (cookieName: string): boolean => {
   const baseName = getKindeCookieBaseName(cookieName);
   return Boolean(
-    baseName && KINDE_COOKIES.includes(baseName as (typeof KINDE_COOKIES)[number]),
+    baseName &&
+      KINDE_COOKIES.includes(baseName as (typeof KINDE_COOKIES)[number])
   );
 };
