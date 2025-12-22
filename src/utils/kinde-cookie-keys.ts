@@ -50,6 +50,7 @@ export const getCookieRemovalOptions = (
   overrides: KindeCookieOptions = {},
 ): KindeCookieOptions => ({
   ...BASE_COOKIE_OPTIONS,
+  maxAge: -1,
   ...overrides,
 });
 

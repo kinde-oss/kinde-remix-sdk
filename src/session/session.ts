@@ -8,9 +8,22 @@ import {
   getStandardCookieOptions,
 } from "../utils/kinde-cookie-keys";
 
+/**
+ * Builds a cookie chunk name by appending the index to the base key.
+ * Index 0 uses the base key without suffix for backwards compatibility.
+ * @param {string} key - The base cookie key name.
+ * @param {number} index - The chunk index (0-based).
+ * @returns {string} The chunk cookie name.
+ */
 const buildChunkName = (key: string, index: number) =>
   `${key}${index === 0 ? "" : index}`;
 
+/**
+ * Removes all cookie chunks associated with a base key.
+ * This includes the base cookie and any numbered chunks (e.g., key, key1, key2).
+ * @param {Cookie} cookies - The universal-cookie instance.
+ * @param {string} baseKey - The base cookie key to remove chunks for.
+ */
 const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
   Object.keys(cookies.getAll())
     .filter(
@@ -21,6 +34,13 @@ const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
     );
 };
 
+/**
+ * Reads all cookie chunk segments for a given base key.
+ * Iterates through chunks (key, key1, key2, ...) until no more are found.
+ * @param {Cookie} cookies - The universal-cookie instance.
+ * @param {string} baseKey - The base cookie key to read chunks for.
+ * @returns {unknown[]} Array of chunk values in order.
+ */
 const readChunkSegments = (cookies: Cookie, baseKey: string) => {
   const segments: unknown[] = [];
   for (let index = 0; ; index++) {
