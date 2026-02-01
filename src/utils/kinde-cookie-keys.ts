@@ -29,10 +29,19 @@ const BASE_COOKIE_OPTIONS: Omit<KindeCookieOptions, "maxAge" | "expires"> = {
   secure: process.env.NODE_ENV === "production",
 };
 
-const DEFAULT_MAX_AGE_FALLBACK = 60 * 60 * 24 * 29;
+const DEFAULT_MAX_AGE_FALLBACK = 60 * 60 * 24 * 29; // 29 days
+const MAX_REASONABLE_AGE = 60 * 60 * 24 * 400; // 400 days (browser max)
 const parsedMaxAge = Number(process.env.KINDE_COOKIE_MAX_AGE);
 
-export const DEFAULT_COOKIE_MAX_AGE = Number.isFinite(parsedMaxAge)
+/**
+ * Validates and returns a safe cookie max age value.
+ * @param {number} value - The value to validate.
+ * @returns {boolean} True if the value is a valid, positive, reasonable max age.
+ */
+const isValidMaxAge = (value: number): boolean =>
+  Number.isFinite(value) && value > 0 && value <= MAX_REASONABLE_AGE;
+
+export const DEFAULT_COOKIE_MAX_AGE = isValidMaxAge(parsedMaxAge)
   ? parsedMaxAge
   : DEFAULT_MAX_AGE_FALLBACK;
 

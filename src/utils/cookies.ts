@@ -1,4 +1,4 @@
-import Cookies from "universal-cookie";
+import Cookies, { Cookie } from "universal-cookie";
 import {
   KindeCookieOptions,
   getStandardCookieOptions,
@@ -6,11 +6,11 @@ import {
 } from "./kinde-cookie-keys";
 
 /**
- *
- * @param {string} name
- * @param {object | string} value
- * @param {CookieOptions} options
- * @returns
+ * Serializes a cookie into a Set-Cookie header string.
+ * @param {string} name - The cookie name.
+ * @param {object | string} value - The cookie value.
+ * @param {KindeCookieOptions} options - Cookie options.
+ * @returns {string} The serialized cookie string.
  */
 function serializeCookie(
   name: string,
@@ -53,12 +53,17 @@ function serializeCookie(
 }
 
 /**
- *
- * @param {Request} request
- * @param {Cookies} cookies
- * @returns {Headers}
+ * Generates Set-Cookie headers for changed Kinde cookies.
+ * Compares old cookies from the request with new cookies to determine
+ * which cookies need to be set or deleted.
+ * @param {Request} request - The incoming request with original cookies.
+ * @param {Cookie} cookies - The universal-cookie instance with updated cookies.
+ * @returns {Headers} Headers object containing Set-Cookie entries.
  */
-export const generateCookieHeader = (request, cookies) => {
+export const generateCookieHeader = (
+  request: Request,
+  cookies: Cookie,
+): Headers => {
   const cookieHeader = request.headers.get("Cookie");
   const oldCookies = cookieHeader
     ? new Cookies(cookieHeader, { path: "/" })

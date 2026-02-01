@@ -9,13 +9,20 @@ import {
 } from "../utils/kinde-cookie-keys";
 
 /**
+ * Maximum number of cookie chunks allowed.
+ * This prevents unbounded iteration in case of unexpected cookie states.
+ * With MAX_COOKIE_LENGTH of 3000 bytes, 20 chunks allows ~60KB of data.
+ */
+const MAX_CHUNKS = 20;
+
+/**
  * Builds a cookie chunk name by appending the index to the base key.
  * Index 0 uses the base key without suffix for backwards compatibility.
  * @param {string} key - The base cookie key name.
  * @param {number} index - The chunk index (0-based).
  * @returns {string} The chunk cookie name.
  */
-const buildChunkName = (key: string, index: number) =>
+const buildChunkName = (key: string, index: number): string =>
   `${key}${index === 0 ? "" : index}`;
 
 /**
@@ -24,7 +31,7 @@ const buildChunkName = (key: string, index: number) =>
  * @param {Cookie} cookies - The universal-cookie instance.
  * @param {string} baseKey - The base cookie key to remove chunks for.
  */
-const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
+const removeCookieChunks = (cookies: Cookie, baseKey: string): void => {
   Object.keys(cookies.getAll())
     .filter(
       (cookieName) => getKindeCookieBaseName(cookieName, baseKey) === baseKey,
@@ -36,20 +43,27 @@ const removeCookieChunks = (cookies: Cookie, baseKey: string) => {
 
 /**
  * Reads all cookie chunk segments for a given base key.
- * Iterates through chunks (key, key1, key2, ...) until no more are found.
+ * Iterates through chunks (key, key1, key2, ...) until no more are found
+ * or the maximum chunk limit is reached.
  * @param {Cookie} cookies - The universal-cookie instance.
  * @param {string} baseKey - The base cookie key to read chunks for.
- * @returns {unknown[]} Array of chunk values in order.
+ * @returns {string[]} Array of chunk string values in order.
  */
-const readChunkSegments = (cookies: Cookie, baseKey: string) => {
-  const segments: unknown[] = [];
-  for (let index = 0; ; index++) {
+const readChunkSegments = (cookies: Cookie, baseKey: string): string[] => {
+  const segments: string[] = [];
+  for (let index = 0; index < MAX_CHUNKS; index++) {
     const chunkName = buildChunkName(baseKey, index);
     const value = cookies.get(chunkName);
     if (value === undefined) {
       break;
     }
-    segments.push(value);
+    // universal-cookie auto-parses JSON, so we need to re-stringify objects
+    // to maintain consistency with chunked values (which are stored as strings)
+    if (typeof value === "string") {
+      segments.push(value);
+    } else {
+      segments.push(JSON.stringify(value));
+    }
   }
   return segments;
 };
@@ -80,20 +94,17 @@ export const createSessionManager = async (
     async getSessionItem(key) {
       const segments = readChunkSegments(cookies, key);
       if (segments.length === 0) return undefined;
-      if (segments.length === 1) return segments[0];
 
-      const serializedValue = (segments as string[]).join("");
+      const serializedValue =
+        segments.length === 1 ? segments[0] : segments.join("");
 
+      // Try to parse JSON for objects, arrays, numbers, booleans
       try {
-        const parsed = JSON.parse(serializedValue);
-        if (typeof parsed === "object") {
-          return parsed;
-        }
-      } catch (error) {
-        // no-op: value was a plain string
+        return JSON.parse(serializedValue);
+      } catch {
+        // Return as-is if not valid JSON (plain string)
+        return serializedValue;
       }
-
-      return serializedValue;
     },
 
     /**
@@ -127,7 +138,8 @@ export const createSessionManager = async (
         return;
       }
 
-      cookies.set(key, value, getStandardCookieOptions());
+      // Use serializedValue for consistency - ensures objects are JSON encoded
+      cookies.set(key, serializedValue, getStandardCookieOptions());
     },
 
     /**
