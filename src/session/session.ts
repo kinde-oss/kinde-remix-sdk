@@ -53,17 +53,11 @@ const readChunkSegments = (cookies: Cookie, baseKey: string): string[] => {
   const segments: string[] = [];
   for (let index = 0; index < MAX_CHUNKS; index++) {
     const chunkName = buildChunkName(baseKey, index);
-    const value = cookies.get(chunkName);
+    const value = cookies.get(chunkName, { doNotParse: true });
     if (value === undefined) {
       break;
     }
-    // universal-cookie auto-parses JSON, so we need to re-stringify objects
-    // to maintain consistency with chunked values (which are stored as strings)
-    if (typeof value === "string") {
-      segments.push(value);
-    } else {
-      segments.push(JSON.stringify(value));
-    }
+    segments.push(value);
   }
   return segments;
 };
