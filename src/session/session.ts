@@ -117,10 +117,7 @@ export const createSessionManager = async (
       const serializedValue =
         typeof value === "string" ? value : JSON.stringify(value);
 
-      if (
-        typeof serializedValue === "string" &&
-        serializedValue.length > MAX_COOKIE_LENGTH
-      ) {
+      if (serializedValue.length > MAX_COOKIE_LENGTH) {
         const chunks = splitString(serializedValue, MAX_COOKIE_LENGTH);
         chunks.forEach((chunk, index) => {
           cookies.set(
@@ -151,8 +148,6 @@ export const createSessionManager = async (
      */
     async destroySession() {
       KINDE_COOKIES.forEach((key) => removeCookieChunks(cookies, key));
-
-      return Promise.resolve();
     },
   };
 
