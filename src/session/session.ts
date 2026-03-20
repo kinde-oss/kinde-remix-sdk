@@ -119,6 +119,11 @@ export const createSessionManager = async (
 
       if (serializedValue.length > MAX_COOKIE_LENGTH) {
         const chunks = splitString(serializedValue, MAX_COOKIE_LENGTH);
+        if (chunks.length > MAX_CHUNKS) {
+          throw new Error(
+            `Session value for "${key}" exceeds maximum supported cookie chunks (${MAX_CHUNKS}).`,
+          );
+        }
         chunks.forEach((chunk, index) => {
           cookies.set(
             buildChunkName(key, index),

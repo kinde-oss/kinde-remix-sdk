@@ -143,6 +143,23 @@ describe("Session tests", () => {
     expect(cookies.get("access_token1")).toBeDefined();
   });
 
+  test("setSessionItem rejects values requiring more than MAX_CHUNKS", async () => {
+    const mockRequest = new Request("http://kinde.com");
+    const { sessionManager, cookies } = await createSessionManager(mockRequest);
+
+    // MAX_COOKIE_LENGTH is 3000 and MAX_CHUNKS is 20 in session manager.
+    const tooLargeValue = "x".repeat(3000 * 20 + 1);
+
+    await expect(
+      sessionManager.setSessionItem("access_token", tooLargeValue),
+    ).rejects.toThrow("exceeds maximum supported cookie chunks");
+
+    // No chunks should be written on rejection.
+    expect(cookies.get("access_token")).toBeUndefined();
+    expect(cookies.get("access_token1")).toBeUndefined();
+    expect(cookies.get("access_token20")).toBeUndefined();
+  });
+
   test("setSessionItem handles non-string values (objects)", async () => {
     const mockRequest = new Request("http://kinde.com");
     const { sessionManager } = await createSessionManager(mockRequest);
