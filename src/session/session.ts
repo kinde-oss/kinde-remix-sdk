@@ -1,4 +1,66 @@
+import { splitString } from "@kinde/js-utils";
 import Cookies, { Cookie } from "universal-cookie";
+import {
+  KINDE_COOKIES,
+  MAX_COOKIE_LENGTH,
+  getCookieRemovalOptions,
+  getKindeCookieBaseName,
+  getStandardCookieOptions,
+} from "../utils/kinde-cookie-keys";
+
+/**
+ * Maximum number of cookie chunks allowed.
+ * This prevents unbounded iteration in case of unexpected cookie states.
+ * With MAX_COOKIE_LENGTH of 3000 bytes, 20 chunks allows ~60KB of data.
+ */
+const MAX_CHUNKS = 20;
+
+/**
+ * Builds a cookie chunk name by appending the index to the base key.
+ * Index 0 uses the base key without suffix for backwards compatibility.
+ * @param {string} key - The base cookie key name.
+ * @param {number} index - The chunk index (0-based).
+ * @returns {string} The chunk cookie name.
+ */
+const buildChunkName = (key: string, index: number): string =>
+  `${key}${index === 0 ? "" : index}`;
+
+/**
+ * Removes all cookie chunks associated with a base key.
+ * This includes the base cookie and any numbered chunks (e.g., key, key1, key2).
+ * @param {Cookie} cookies - The universal-cookie instance.
+ * @param {string} baseKey - The base cookie key to remove chunks for.
+ */
+const removeCookieChunks = (cookies: Cookie, baseKey: string): void => {
+  Object.keys(cookies.getAll())
+    .filter(
+      (cookieName) => getKindeCookieBaseName(cookieName, baseKey) === baseKey,
+    )
+    .forEach((cookieName) =>
+      cookies.remove(cookieName, getCookieRemovalOptions()),
+    );
+};
+
+/**
+ * Reads all cookie chunk segments for a given base key.
+ * Iterates through chunks (key, key1, key2, ...) until no more are found
+ * or the maximum chunk limit is reached.
+ * @param {Cookie} cookies - The universal-cookie instance.
+ * @param {string} baseKey - The base cookie key to read chunks for.
+ * @returns {string[]} Array of chunk string values in order.
+ */
+const readChunkSegments = (cookies: Cookie, baseKey: string): string[] => {
+  const segments: string[] = [];
+  for (let index = 0; index < MAX_CHUNKS; index++) {
+    const chunkName = buildChunkName(baseKey, index);
+    const value = cookies.get(chunkName, { doNotParse: true });
+    if (value === undefined) {
+      break;
+    }
+    segments.push(value);
+  }
+  return segments;
+};
 
 /**
  *
@@ -24,7 +86,19 @@ export const createSessionManager = async (
      * @returns {Promise<any>} The session item.
      */
     async getSessionItem(key) {
-      return cookies.get(key);
+      const segments = readChunkSegments(cookies, key);
+      if (segments.length === 0) return undefined;
+
+      const serializedValue =
+        segments.length === 1 ? segments[0] : segments.join("");
+
+      // Try to parse JSON for objects, arrays, numbers, booleans
+      try {
+        return JSON.parse(serializedValue);
+      } catch {
+        // Return as-is if not valid JSON (plain string)
+        return serializedValue;
+      }
     },
 
     /**
@@ -34,7 +108,34 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async setSessionItem(key, value) {
-      cookies.set(key, value, { path: "/" });
+      removeCookieChunks(cookies, key);
+
+      if (value === undefined) {
+        return;
+      }
+
+      const serializedValue =
+        typeof value === "string" ? value : JSON.stringify(value);
+
+      if (serializedValue.length > MAX_COOKIE_LENGTH) {
+        const chunks = splitString(serializedValue, MAX_COOKIE_LENGTH);
+        if (chunks.length > MAX_CHUNKS) {
+          throw new Error(
+            `Session value for "${key}" exceeds maximum supported cookie chunks (${MAX_CHUNKS}).`,
+          );
+        }
+        chunks.forEach((chunk, index) => {
+          cookies.set(
+            buildChunkName(key, index),
+            chunk,
+            getStandardCookieOptions(),
+          );
+        });
+        return;
+      }
+
+      // Use serializedValue for consistency - ensures objects are JSON encoded
+      cookies.set(key, serializedValue, getStandardCookieOptions());
     },
 
     /**
@@ -43,7 +144,7 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async removeSessionItem(key) {
-      cookies.remove(key, { path: "/" });
+      removeCookieChunks(cookies, key);
     },
 
     /**
@@ -51,17 +152,7 @@ export const createSessionManager = async (
      * @returns {Promise<void>}
      */
     async destroySession() {
-      [
-        "id_token_payload",
-        "id_token",
-        "access_token_payload",
-        "access_token",
-        "user",
-        "refresh_token",
-        "post_login_redirect_url",
-      ].forEach((key) => cookies.remove(key, { path: "/" }));
-
-      return Promise.resolve();
+      KINDE_COOKIES.forEach((key) => removeCookieChunks(cookies, key));
     },
   };
 

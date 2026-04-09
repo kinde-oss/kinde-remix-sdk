@@ -1,35 +1,21 @@
-import Cookies from "universal-cookie";
-
-const KINDE_COOKIES = [
-  "refresh_token",
-  "access_token",
-  "id_token",
-  "user",
-  "ac-state-key",
-  "post_login_redirect_url",
-];
-
-interface CookieOptions {
-  maxAge?: number;
-  domain?: string;
-  path?: string;
-  expires?: Date;
-  httpOnly?: boolean;
-  secure?: boolean;
-  sameSite?: "Strict" | "Lax" | "None" | "Secure";
-}
+import Cookies, { Cookie } from "universal-cookie";
+import {
+  KindeCookieOptions,
+  getStandardCookieOptions,
+  isKindeCookieName,
+} from "./kinde-cookie-keys";
 
 /**
- *
- * @param {string} name
- * @param {object | string} value
- * @param {CookieOptions} options
- * @returns
+ * Serializes a cookie into a Set-Cookie header string.
+ * @param {string} name - The cookie name.
+ * @param {object | string} value - The cookie value.
+ * @param {KindeCookieOptions} options - Cookie options.
+ * @returns {string} The serialized cookie string.
  */
 function serializeCookie(
   name: string,
   value: string | object,
-  options: CookieOptions = {},
+  options: KindeCookieOptions = {},
 ) {
   const cookieParts = [
     `${encodeURIComponent(name)}=${encodeURIComponent(typeof value === "object" ? JSON.stringify(value) : value)}`,
@@ -67,36 +53,39 @@ function serializeCookie(
 }
 
 /**
- *
- * @param {Request} request
- * @param {Cookies} cookies
- * @returns {Headers}
+ * Generates Set-Cookie headers for changed Kinde cookies.
+ * Compares old cookies from the request with new cookies to determine
+ * which cookies need to be set or deleted.
+ * @param {Request} request - The incoming request with original cookies.
+ * @param {Cookie} cookies - The universal-cookie instance with updated cookies.
+ * @returns {Headers} Headers object containing Set-Cookie entries.
  */
-export const generateCookieHeader = (request, cookies) => {
+export const generateCookieHeader = (
+  request: Request,
+  cookies: Cookie,
+): Headers => {
   const cookieHeader = request.headers.get("Cookie");
   const oldCookies = cookieHeader
     ? new Cookies(cookieHeader, { path: "/" })
     : new Cookies(null, { path: "/" });
-  const oldCookiesKeys = Object.keys(oldCookies.getAll());
-  const newCookiesKeys = Object.keys(cookies.getAll()).filter((cookie) =>
-    KINDE_COOKIES.includes(cookie),
+  const oldCookiesKeys = Object.keys(oldCookies.getAll()).filter(
+    isKindeCookieName,
+  );
+  const newCookiesKeys = Object.keys(cookies.getAll()).filter(
+    isKindeCookieName,
   );
 
-  const cookiesToBeDeleted = oldCookiesKeys
-    .filter((cookie) => KINDE_COOKIES.includes(cookie))
-    .filter((x) => !newCookiesKeys.includes(x));
+  const cookiesToBeDeleted = oldCookiesKeys.filter(
+    (x) => !newCookiesKeys.includes(x),
+  );
 
   const headers = new Headers();
+  const standardCookieOptions = getStandardCookieOptions();
 
   newCookiesKeys.forEach((key) => {
     headers.append(
       "Set-Cookie",
-      serializeCookie(key, cookies.get(key), {
-        path: "/",
-        sameSite: "Lax",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      }),
+      serializeCookie(key, cookies.get(key), standardCookieOptions),
     );
   });
 
@@ -104,11 +93,8 @@ export const generateCookieHeader = (request, cookies) => {
     headers.append(
       "Set-Cookie",
       serializeCookie(key, "", {
-        path: "/",
+        ...standardCookieOptions,
         maxAge: -1,
-        sameSite: "Lax",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
       }),
     );
   });
