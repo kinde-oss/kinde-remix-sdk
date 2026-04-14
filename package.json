@@ -47,6 +47,7 @@
   "homepage": "https://kinde.com",
   "dependencies": {
     "@kinde-oss/kinde-typescript-sdk": "^2.8.0",
+    "@kinde/js-utils": "^0.29.0",
     "jwt-decode": "^4.0.0",
     "universal-cookie": "^8.0.1"
   },
