@@ -22,7 +22,7 @@ importers:
         version: 7.4.0(react@19.0.0)
       universal-cookie:
         specifier: ^8.0.1
-        version: 8.1.0
+        version: 8.1.2
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
@@ -2564,8 +2564,8 @@ packages:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
     engines: {node: '>=18'}
 
-  universal-cookie@8.1.0:
-    resolution: {integrity: sha512-65+kikQAWq7gsJbirwB7dk6e8xeug1hx3++x2dQoymdXcV7fYv0yChOgHCg01ZwP3fE3sYeq6EWCSpFv3HLl9g==}
+  universal-cookie@8.1.2:
+    resolution: {integrity: sha512-kcKzTGNsxVytujrYOvQbvh//QyFrA53HrzCGyzh6i9ujCww5gfPrLK0tG+jJD40SIIldiEjBNPPSR8fBMS21GA==}
 
   universal-user-agent@6.0.1:
     resolution: {integrity: sha512-yCzhz6FN2wU1NiiQRogkTQszlQSlpWaw8SvVegAc+bDxbzHgh1vX8uIe8OYyMH6DwH+sdTJsgMl36+mSMdRJIQ==}
@@ -5384,7 +5384,7 @@ snapshots:
 
   unicorn-magic@0.1.0: {}
 
-  universal-cookie@8.1.0:
+  universal-cookie@8.1.2:
     dependencies:
       cookie: 1.1.1
 
