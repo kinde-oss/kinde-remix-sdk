@@ -93,6 +93,6 @@ export const isKindeCookieName = (cookieName: string): boolean => {
   const baseName = getKindeCookieBaseName(cookieName);
   return Boolean(
     baseName &&
-      KINDE_COOKIES.includes(baseName as (typeof KINDE_COOKIES)[number])
+    KINDE_COOKIES.includes(baseName as (typeof KINDE_COOKIES)[number]),
   );
 };
