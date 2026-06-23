@@ -65,7 +65,7 @@
     "eslint-plugin-promise": "^7.0.0",
     "genversion": "^3.2.0",
     "prettier": "^3.2.5",
-    "release-it": "^17.1.1",
+    "release-it": "^20.0.0",
     "rollup": "^4.60.2",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0"
