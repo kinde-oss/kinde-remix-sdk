@@ -68,7 +68,7 @@
     "release-it": "^20.0.0",
     "rollup": "^4.60.2",
     "typescript": "^5.4.3",
-    "vitest": "^1.4.0"
+    "vitest": "^3.0.0"
   },
   "peerDependencies": {
     "react-router": "^7.4.0 || ^8.0.0"
