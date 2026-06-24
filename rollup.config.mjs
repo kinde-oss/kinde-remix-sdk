@@ -24,6 +24,8 @@ export default {
       sourceMap: false,
       compilerOptions: {
         outDir: "dist",
+        declaration: false,
+        declarationMap: false,
       },
     }),
     terser(),
