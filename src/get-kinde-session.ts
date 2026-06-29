@@ -1,3 +1,9 @@
+import type {
+  ClaimTokenType,
+  FlagType,
+  GetFlagType,
+  UserType,
+} from "@kinde-oss/kinde-typescript-sdk";
 import { config } from "./config";
 import { kindeClient } from "./handle-auth";
 import { createSessionManager } from "./session/session";
@@ -7,7 +13,7 @@ import { generateCookieHeader } from "./utils/cookies";
  *
  * @param {Request} request
  */
-export const getKindeSession = async (request) => {
+export const getKindeSession = async (request: Request) => {
   const { sessionManager, cookies } = await createSessionManager(request);
 
   /**
@@ -16,7 +22,7 @@ export const getKindeSession = async (request) => {
    * @param {import("@kinde-oss/kinde-typescript-sdk").ClaimTokenType} type
    * @returns
    */
-  const getClaimValue = async (claim, type) => {
+  const getClaimValue = async (claim: string, type?: ClaimTokenType) => {
     try {
       return await kindeClient.getClaimValue(sessionManager, claim, type);
     } catch (error) {
@@ -31,7 +37,7 @@ export const getKindeSession = async (request) => {
    * @param {import("@kinde-oss/kinde-typescript-sdk").ClaimTokenType} type
    * @returns {Promise<{name: string, value: unknown} | null>}
    */
-  const getClaim = async (claim, type) => {
+  const getClaim = async (claim: string, type?: ClaimTokenType) => {
     try {
       return await kindeClient.getClaim(sessionManager, claim, type);
     } catch (error) {
@@ -70,13 +76,14 @@ export const getKindeSession = async (request) => {
    *
    * @returns {Promise<import("@kinde-oss/kinde-typescript-sdk").UserType | null>}
    */
-  const getUser = async () => {
+  const getUser = async (): Promise<UserType | null> => {
     try {
       return await kindeClient.getUser(sessionManager);
     } catch (error) {
       if (
+        error instanceof Error &&
         error.message !==
-        "Cannot get user details, no authentication credential found"
+          "Cannot get user details, no authentication credential found"
       )
         if (config.isDebugMode) console.debug(error);
       return null;
@@ -103,7 +110,11 @@ export const getKindeSession = async (request) => {
    * @param {*} type
    * @returns {Promise<import("@kinde-oss/kinde-typescript-sdk").GetFlagType | null>}
    */
-  const getFlag = async (code, defaultValue, type) => {
+  const getFlag = async (
+    code: string,
+    defaultValue: FlagType[keyof FlagType],
+    type?: keyof FlagType,
+  ): Promise<GetFlagType | null> => {
     try {
       return await kindeClient.getFlag(
         sessionManager,
@@ -123,7 +134,7 @@ export const getKindeSession = async (request) => {
    * @param {boolean} defaultValue
    * @returns {Promise<boolean | null>}
    */
-  const getBooleanFlag = async (code, defaultValue) => {
+  const getBooleanFlag = async (code: string, defaultValue: boolean) => {
     try {
       return await kindeClient.getBooleanFlag(
         sessionManager,
@@ -142,7 +153,7 @@ export const getKindeSession = async (request) => {
    * @param {number} defaultValue
    * @returns {Promise<number | null>}
    */
-  const getIntegerFlag = async (code, defaultValue) => {
+  const getIntegerFlag = async (code: string, defaultValue: number) => {
     try {
       return await kindeClient.getIntegerFlag(
         sessionManager,
@@ -160,7 +171,7 @@ export const getKindeSession = async (request) => {
    * @param {string} defaultValue
    * @returns {Promise<string | null>}
    */
-  const getStringFlag = async (code, defaultValue) => {
+  const getStringFlag = async (code: string, defaultValue: string) => {
     try {
       return await kindeClient.getStringFlag(
         sessionManager,
@@ -178,7 +189,7 @@ export const getKindeSession = async (request) => {
    * @param {string} permission
    * @returns {Promise<{orgCode: string | null; isGranted: boolean}| null>}
    */
-  const getPermission = async (permission) => {
+  const getPermission = async (permission: string) => {
     try {
       return await kindeClient.getPermission(sessionManager, permission);
     } catch (err) {
