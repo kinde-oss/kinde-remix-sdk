@@ -11,19 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 11
       - name: Setting up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-      - name: Enabling pre-post scripts
-        run: pnpm config set enable-pre-post-scripts true
       - run: pnpm install
       - run: pnpm lint
       - name: Cache pnpm modules
