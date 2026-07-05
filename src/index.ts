@@ -1,2 +1,2 @@
-export { getKindeSession } from "./get-kinde-session.ts";
-export { handleAuth } from "./handle-auth.ts";
+export { getKindeSession } from "./get-kinde-session";
+export { handleAuth } from "./handle-auth";
