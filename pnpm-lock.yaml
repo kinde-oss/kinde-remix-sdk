@@ -12,8 +12,8 @@ importers:
         specifier: ^2.8.0
         version: 2.15.0
       '@kinde/js-utils':
-        specifier: ^0.30.0
-        version: 0.30.1
+        specifier: ^0.32.0
+        version: 0.32.0
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -468,14 +468,6 @@ packages:
     resolution: {integrity: sha512-sYb1eSEnjdDd0HXYzp/v9EaYaWUhruIfY1Vlmw+t4J6yaCUT4O//lfVxxGX0EB7uq11SqNwBPCQMCg+7eXYNdA==}
     engines: {node: '>=20'}
 
-  '@kinde/js-utils@0.30.1':
-    resolution: {integrity: sha512-7lPU7APljiBARIjkV0XGFjgmfoOJj8cTnbNnC98aEDWV2MnMbEH0XRiXjxDNzgGcCAgszfCM5d/Q744Lcq/K6Q==}
-    peerDependencies:
-      expo-secure-store: '>=11.0.0'
-    peerDependenciesMeta:
-      expo-secure-store:
-        optional: true
-
   '@kinde/js-utils@0.31.0':
     resolution: {integrity: sha512-TJX1ymowYVVodUjgiiqg8YeZO4tOnHfNF+m59UvMYX1PNg46dbbKLVTdpIvIwCm4StTnbjKsRoCSDV6Tw8DBWA==}
     peerDependencies:
@@ -484,8 +476,8 @@ packages:
       expo-secure-store:
         optional: true
 
-  '@kinde/jwt-decoder@0.2.1':
-    resolution: {integrity: sha512-V6JIC7SzQjxpxcgXrrs5AzJQrLoLgsTvnLVirHDhmSE//LIFz7nxM5Z19Hgm56wKm3L3yDM8QZW/oluflLCrxQ==}
+  '@kinde/js-utils@0.32.0':
+    resolution: {integrity: sha512-rio1Th67SmbYieJSaBi/W+3W6Rf5edoaJ8oR921X+M40EZX0NvzYSu42WyikesPiqCgWlTMu78WbM12hzyvEnQ==}
 
   '@kinde/jwt-decoder@0.2.4':
     resolution: {integrity: sha512-+LA1wab7WzzfGtz5IBHT+k6cHWdF0AxWLn5B8v3n2SRfNflTp5E6766tZnUUPJ82Z3YBaW03ONHpIKMskxeMQg==}
@@ -2851,15 +2843,13 @@ snapshots:
     transitivePeerDependencies:
       - expo-secure-store
 
-  '@kinde/js-utils@0.30.1':
-    dependencies:
-      '@kinde/jwt-decoder': 0.2.1
-
   '@kinde/js-utils@0.31.0':
     dependencies:
       '@kinde/jwt-decoder': 0.2.4
 
-  '@kinde/jwt-decoder@0.2.1': {}
+  '@kinde/js-utils@0.32.0':
+    dependencies:
+      '@kinde/jwt-decoder': 0.2.4
 
   '@kinde/jwt-decoder@0.2.4': {}
 
