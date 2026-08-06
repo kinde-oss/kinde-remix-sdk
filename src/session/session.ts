@@ -85,7 +85,7 @@ export const createSessionManager = async (
      * @param {string} key - The key of the session item.
      * @returns {Promise<any>} The session item.
      */
-    async getSessionItem(key) {
+    async getSessionItem(key: string) {
       const segments = readChunkSegments(cookies, key);
       if (segments.length === 0) return undefined;
 
@@ -107,7 +107,7 @@ export const createSessionManager = async (
      * @param {any} value - The value to set.
      * @returns {Promise<void>}
      */
-    async setSessionItem(key, value) {
+    async setSessionItem(key: string, value: unknown) {
       removeCookieChunks(cookies, key);
 
       if (value === undefined) {
@@ -143,7 +143,7 @@ export const createSessionManager = async (
      * @param {string} key - The key of the session item.
      * @returns {Promise<void>}
      */
-    async removeSessionItem(key) {
+    async removeSessionItem(key: string) {
       removeCookieChunks(cookies, key);
     },
 
