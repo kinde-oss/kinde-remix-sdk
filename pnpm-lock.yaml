@@ -13,7 +13,7 @@ importers:
         version: 2.14.0
       '@kinde/js-utils':
         specifier: ^0.32.0
-        version: 0.32.0
+        version: 0.32.1
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -342,11 +342,14 @@ packages:
       expo-secure-store:
         optional: true
 
-  '@kinde/js-utils@0.32.0':
-    resolution: {integrity: sha512-rio1Th67SmbYieJSaBi/W+3W6Rf5edoaJ8oR921X+M40EZX0NvzYSu42WyikesPiqCgWlTMu78WbM12hzyvEnQ==}
+  '@kinde/js-utils@0.32.1':
+    resolution: {integrity: sha512-sh65zgj+pvc0K38zF1FytRQOpkzJy2qmth0u+vSzgbcLdCDYfEpswcnnbqqiwK6CXIkAMGiOlQGe5wPLpNoHfw==}
 
   '@kinde/jwt-decoder@0.2.1':
     resolution: {integrity: sha512-V6JIC7SzQjxpxcgXrrs5AzJQrLoLgsTvnLVirHDhmSE//LIFz7nxM5Z19Hgm56wKm3L3yDM8QZW/oluflLCrxQ==}
+
+  '@kinde/jwt-decoder@0.2.5':
+    resolution: {integrity: sha512-du2JjKb560YJCwM1chjkpZBbg6q3v2RX1JfT1Dbhl0QjrmKsWFTZvFja34rdjacps0CjdA4nE3XHPzMDejbg5g==}
 
   '@kinde/jwt-validator@0.4.1':
     resolution: {integrity: sha512-q6Pt9UnebdcQb6pL2LpEBfkvG0SBcrA602Y5mz4XGK2BWP3bBv918FgF9Dkmm6DXRG649IwiTVBhdpoM+rbNOA==}
@@ -2834,11 +2837,13 @@ snapshots:
     dependencies:
       '@kinde/jwt-decoder': 0.2.1
 
-  '@kinde/js-utils@0.32.0':
+  '@kinde/js-utils@0.32.1':
     dependencies:
-      '@kinde/jwt-decoder': 0.2.1
+      '@kinde/jwt-decoder': 0.2.5
 
   '@kinde/jwt-decoder@0.2.1': {}
+
+  '@kinde/jwt-decoder@0.2.5': {}
 
   '@kinde/jwt-validator@0.4.1':
     dependencies:
